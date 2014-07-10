@@ -182,7 +182,6 @@ L.Control.GeoSearch = L.Control.extend({
             else
                 this._positionMarker.setLatLng([location.Y, location.X]);
         }
-
         this._map.setView([location.Y, location.X], this._config.zoomLevel, false);
         this._map.fireEvent('geosearch_showlocation', {Location: location});
     },
@@ -206,6 +205,8 @@ L.Control.GeoSearch = L.Control.extend({
             queryBox.value = '';
             this._map._container.focus();
         } else if (e.keyCode === enter) {
+            e.preventDefault();
+            e.stopPropagation();
             this.geosearch(queryBox.value);
         }
     }
