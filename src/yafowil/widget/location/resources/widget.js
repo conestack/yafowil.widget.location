@@ -44,12 +44,14 @@ if (typeof(window.yafowil) == "undefined") yafowil = {};
                 var max_zoom = elem.data('max_zoom');
                 var value = elem.data('value');
                 // take value data instead of defaults if given
-                if (value) {
+                // XXX: 0 needs to work as well
+                if (value && value.lat && val.lon) {
                     lat = value.lat;
                     lon = value.lon;
-                    if (value.zoom) {
-                        zoom = value.zoom;
-                    }
+                }
+                // XXX: 0 needs to work as well
+                if (value && value.zoom) {
+                    zoom = value.zoom;
                 }
                 // create map
                 var id = elem.attr('id');

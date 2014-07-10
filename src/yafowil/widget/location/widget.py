@@ -1,4 +1,5 @@
 import json
+from node.utils import UNSET
 from yafowil.base import (
     factory,
     fetch_value,
@@ -15,7 +16,20 @@ from yafowil.utils import (
 
 
 def location_extractor(widget, data):
-    pass
+    lat = data.request.get('{0}.lat'.format(widget.dottedpath), None)
+    lon = data.request.get('{0}.lon'.format(widget.dottedpath), None)
+    if lat is None:
+        return UNSET
+    # if lat and no lon given, something went totally wrong
+    if lon is None:
+        return ValueError('Malformed request. Cannot extract Coordinates')
+    # return value is empty dict if no coordinates found. needed for
+    # generic required extractor to work correctly
+    value = dict()
+    if lat:
+        value['lat'] = float(lat)
+        value['lon'] = float(lon)
+    return value
 
 
 @managedprops('lat', 'lon', 'zoom', *css_managed_props)

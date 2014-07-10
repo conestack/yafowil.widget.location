@@ -29,3 +29,98 @@ Render map widget with defaults value::
       <input class="location-lon" id="location-lon-default" name="default.lon" type="hidden" value="11.3333"/>
     </div>
     <BLANKLINE>
+
+Widget extraction without preset value::
+
+    >>> widget = factory('location', 'default', props={'required': True})
+    >>> request = {}
+    >>> data = widget.extract(request)
+    >>> data.extracted
+    <UNSET>
+
+    >>> request = {
+    ...     'default.lat': '',
+    ...     'default.lon': '',
+    ... }
+    >>> data = widget.extract(request)
+
+    >>> data.errors
+    [ExtractionError('Mandatory field was empty',)]
+
+    >>> data.extracted
+    {}
+
+    >>> request = {
+    ...     'default.lat': '47.2667',
+    ...     'default.lon': '11.3833',
+    ... }
+    >>> data = widget.extract(request)
+
+    >>> data.errors
+    []
+
+    >>> data.extracted
+    {'lat': 47.2667, 'lon': 11.3833}
+
+Widget extraction with preset value::
+
+    >>> value = {
+    ...     'lat': '47.0',
+    ...     'lon': '11.0',
+    ... }
+    >>> widget = factory('location', 'default', value=value,
+    ...     props={
+    ...         'required': True,
+    ...     })
+    >>> request = {}
+    >>> data = widget.extract(request)
+    >>> data.extracted
+    <UNSET>
+
+    >>> pxml(widget(data=data))
+    <div class="location-wrapper location" id="location-default">
+      <div class="location-map" data-lat="47.2667" data-lon="11.3833" data-max_zoom="18" data-min_zoom="2" data-value="{&quot;lat&quot;: &quot;47.0&quot;, &quot;lon&quot;: &quot;11.0&quot;}" data-zoom="12" id="location-map-default"/>
+      <input class="location-lat" id="location-lat-default" name="default.lat" type="hidden" value="47.0"/>
+      <input class="location-lon" id="location-lon-default" name="default.lon" type="hidden" value="11.0"/>
+    </div>
+    <BLANKLINE>
+
+    >>> request = {
+    ...     'default.lat': '',
+    ...     'default.lon': '',
+    ... }
+    >>> data = widget.extract(request)
+
+    >>> data.errors
+    [ExtractionError('Mandatory field was empty',)]
+
+    >>> data.extracted
+    {}
+
+    >>> pxml(widget(data=data))
+    <div class="location-wrapper error location" id="location-default">
+      <div class="location-map" data-lat="47.2667" data-lon="11.3833" data-max_zoom="18" data-min_zoom="2" data-zoom="12" id="location-map-default"/>
+      <input class="location-lat" id="location-lat-default" name="default.lat" type="hidden"/>
+      <input class="location-lon" id="location-lon-default" name="default.lon" type="hidden"/>
+    </div>
+    <BLANKLINE>
+
+    >>> request = {
+    ...     'default.lat': '47.2667',
+    ...     'default.lon': '11.3833',
+    ... }
+    >>> data = widget.extract(request)
+
+    >>> data.errors
+    []
+
+    >>> data.extracted
+    {'lat': 47.2667, 'lon': 11.3833}
+
+    >>> pxml(widget(data=data))
+    <div class="location-wrapper location" id="location-default">
+      <div class="location-map" data-lat="47.2667" data-lon="11.3833" data-max_zoom="18" data-min_zoom="2" data-value="{&quot;lat&quot;: 47.2667, &quot;lon&quot;: 11.3833}" data-zoom="12" id="location-map-default"/>
+      <input class="location-lat" id="location-lat-default" name="default.lat" type="hidden" value="47.2667"/>
+      <input class="location-lon" id="location-lon-default" name="default.lon" type="hidden" value="11.3833"/>
+    </div>
+    <BLANKLINE>
