@@ -25,67 +25,81 @@ if (typeof(window.yafowil) == "undefined") yafowil = {};
 
         location: {
 
-            create_marker: function(markers, lat, lon) {
-                var marker = L.marker(
-                    [lat, lon],
-                    { draggable: true }
-                );
-                marker.addTo(markers);
-                var popup = document.createElement('a');
-                popup.href = "#";
-                popup.innerHTML = "Remove";
-                popup.onclick = function() {
-                    markers.removeLayer(marker);
-                    return false;
-                };
-                marker.bindPopup(popup);
-                marker.on('dragend', function(evt) {
-                    console.log(evt.target._latlng);
+            binder: function(context) {
+                $('div.location-map', context).each(function() {
+                    yafowil.location.initialize_map($(this));
                 });
             },
 
-            binder: function(context) {
-                $('div.location-map', context).each(function() {
-                    // extract data from DOM
-                    var elem = $(this);
-                    var lat = elem.data('lat');
-                    var lon = elem.data('lon');
-                    var zoom = elem.data('zoom');
-                    var min_zoom = elem.data('min_zoom');
-                    var max_zoom = elem.data('max_zoom');
-                    var value = elem.data('value');
-                    // take value data instead of defaults if given
-                    if (value) {
-                        lat = value.lat;
-                        lon = value.lon;
-                        if (value.zoom) {
-                            zoom = value.zoom;
-                        }
+            initialize_map: function(elem) {
+                // related lat and lon inputs
+                var wrapper = elem.parent();
+                var input_lat = $('input.location-lat', wrapper);
+                var input_lon = $('input.location-lon', wrapper);
+                // extract data from DOM
+                var lat = elem.data('lat');
+                var lon = elem.data('lon');
+                var zoom = elem.data('zoom');
+                var min_zoom = elem.data('min_zoom');
+                var max_zoom = elem.data('max_zoom');
+                var value = elem.data('value');
+                // take value data instead of defaults if given
+                if (value) {
+                    lat = value.lat;
+                    lon = value.lon;
+                    if (value.zoom) {
+                        zoom = value.zoom;
                     }
-                    // create map
-                    var id = elem.attr('id');
-                    var osm = 'Map data © <a href="http://openstreetmap.org">OSM</a>';
-                    var map = L.map(id).setView([lat, lon], zoom);
-                    map.on('click', function(evt) {
-                        console.log(evt);
+                }
+                // create map
+                var id = elem.attr('id');
+                var osm =
+                    'Map data © <a href="http://openstreetmap.org">OSM</a>';
+                var map = L.map(id).setView([lat, lon], zoom);
+                // set OSM tiles
+                var tiles = L.tileLayer(
+                    'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    {
+                        attribution: osm,
+                        minZoom: min_zoom,
+                        maxZoom: max_zoom
                     });
-                    // set OSM tiles
-                    var tiles = L.tileLayer(
-                        'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                        {
-                            attribution: osm,
-                            minZoom: min_zoom,
-                            maxZoom: max_zoom
-                        });
-                    tiles.addTo(map);
-                    // create markers feature group
-                    var markers = new L.FeatureGroup();
-                    map.addLayer(markers);
-                    // add marker if value given
-                    if (value) {
-                        yafowil.location.create_marker(
-                            markers, value.lat, value.lon);
-                    }
+                tiles.addTo(map);
+                // create markers feature group
+                var markers = new L.FeatureGroup();
+                map.addLayer(markers);
+                // create marker helper
+                var create_marker = function(marker_lat, marker_lon) {
+                    var marker = L.marker(
+                        [marker_lat, marker_lon],
+                        { draggable: true }
+                    );
+                    marker.addTo(markers);
+                    var popup = document.createElement('a');
+                    popup.href = "#";
+                    popup.innerHTML = "Remove";
+                    popup.onclick = function() {
+                        markers.removeLayer(marker);
+                        input_lat.val('');
+                        input_lon.val('');
+                        return false;
+                    };
+                    marker.bindPopup(popup);
+                    marker.on('dragend', function(evt) {
+                        input_lat.val(evt.target._latlng.lat);
+                        input_lon.val(evt.target._latlng.lng);
+                    });
+                };
+                // add marker if value given
+                if (value) {
+                    create_marker(value.lat, value.lon);
+                }
+                // add or move marker on map click
+                map.on('click', function(evt) {
+                    markers.clearLayers();
+                    create_marker(evt.latlng.lat, evt.latlng.lng);
+                    input_lat.val(evt.latlng.lat);
+                    input_lon.val(evt.latlng.lng);
                 });
             }
         }
