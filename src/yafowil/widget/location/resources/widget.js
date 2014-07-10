@@ -36,6 +36,7 @@ if (typeof(window.yafowil) == "undefined") yafowil = {};
                 var wrapper = elem.parent();
                 var input_lat = $('input.location-lat', wrapper);
                 var input_lon = $('input.location-lon', wrapper);
+                var input_zoom = $('input.location-zoom', wrapper);
                 // extract data from DOM
                 var lat = elem.data('lat');
                 var lon = elem.data('lon');
@@ -45,7 +46,7 @@ if (typeof(window.yafowil) == "undefined") yafowil = {};
                 var value = elem.data('value');
                 // take value data instead of defaults if given
                 // XXX: 0 needs to work as well
-                if (value && value.lat && val.lon) {
+                if (value && value.lat && value.lon) {
                     lat = value.lat;
                     lon = value.lon;
                 }
@@ -85,12 +86,14 @@ if (typeof(window.yafowil) == "undefined") yafowil = {};
                         markers.removeLayer(marker);
                         input_lat.val('');
                         input_lon.val('');
+                        input_zoom.val('');
                         return false;
                     };
                     marker.bindPopup(popup);
                     marker.on('dragend', function(evt) {
                         input_lat.val(evt.target._latlng.lat);
                         input_lon.val(evt.target._latlng.lng);
+                        input_zoom.val(map.getZoom());
                     });
                 };
                 // add marker if value given
@@ -105,6 +108,7 @@ if (typeof(window.yafowil) == "undefined") yafowil = {};
                     create_marker(evt.latlng.lat, evt.latlng.lng);
                     input_lat.val(evt.latlng.lat);
                     input_lon.val(evt.latlng.lng);
+                    input_zoom.val(map.getZoom());
                 });
                 // add geosearch widget
                 var geosearch = new L.Control.GeoSearch({

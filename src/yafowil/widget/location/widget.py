@@ -16,8 +16,9 @@ from yafowil.utils import (
 
 
 def location_extractor(widget, data):
-    lat = data.request.get('{0}.lat'.format(widget.dottedpath), None)
-    lon = data.request.get('{0}.lon'.format(widget.dottedpath), None)
+    lat = data.request.get('{0}.lat'.format(widget.dottedpath))
+    lon = data.request.get('{0}.lon'.format(widget.dottedpath))
+    zoom = data.request.get('{0}.zoom'.format(widget.dottedpath))
     if lat is None:
         return UNSET
     # if lat and no lon given, something went totally wrong
@@ -29,6 +30,7 @@ def location_extractor(widget, data):
     if lat:
         value['lat'] = float(lat)
         value['lon'] = float(lon)
+        value['zoom'] = int(zoom)
     return value
 
 
@@ -45,7 +47,7 @@ def location_edit_renderer(widget, data):
         map_attrs['data-value'] = json.dumps(value)
     map_attrs.update(data_attrs_helper(
         widget, data, ['lat', 'lon', 'zoom', 'min_zoom', 'max_zoom']))
-    map = tag('div', **map_attrs)
+    map = tag('div', ' ', **map_attrs)
     # create hidden input for lat
     lat = tag('input', **{
         'type': 'hidden',
@@ -62,8 +64,16 @@ def location_edit_renderer(widget, data):
         'id': cssid(widget, 'location-lon'),
         'class': 'location-lon',
     })
+    # create hidden input for current zoom
+    zoom = tag('input', **{
+        'type': 'hidden',
+        'name': '{0}.zoom'.format(widget.dottedpath),
+        'value': value and value.get('zoom') or None,
+        'id': cssid(widget, 'location-zoom'),
+        'class': 'location-zoom',
+    })
     # create location widget wrapper
-    wrapper = tag('div', map, lat, lon, **{
+    wrapper = tag('div', map, lat, lon, zoom, **{
         'id': cssid(widget, 'location'),
         'class': ' '.join(['location-wrapper', cssclasses(widget, data)]),
     })
