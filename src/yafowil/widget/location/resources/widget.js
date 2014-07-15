@@ -103,7 +103,6 @@ if (typeof(window.yafowil) == "undefined") yafowil = {};
                 // add or move marker on map click
                 map.on('click', function(evt) {
                     // XXX: confirmation dialog
-                    console.log('click map');
                     markers.clearLayers();
                     create_marker(evt.latlng.lat, evt.latlng.lng);
                     input_lat.val(evt.latlng.lat);
@@ -126,7 +125,6 @@ if (typeof(window.yafowil) == "undefined") yafowil = {};
                     setTimeout(function () {
                         res.style.display = 'none';
                     }, 3000);
-                    console.log(geosearch._map._container);
                 });
             }
         }
