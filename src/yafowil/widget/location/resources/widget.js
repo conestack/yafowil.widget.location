@@ -61,7 +61,7 @@ if (typeof(window.yafowil) == "undefined") yafowil = {};
                 var map = new L.map(id).setView([lat, lon], zoom);
                 // set OSM tiles
                 var tiles = new L.tileLayer(
-                    'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                     {
                         attribution: osm,
                         minZoom: min_zoom,
