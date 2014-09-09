@@ -1,3 +1,4 @@
 *.pyc
 *.pyo
 /src/yafowil.widget.location.egg-info/
+/dist/
