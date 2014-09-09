@@ -1,8 +1,8 @@
 History
 =======
 
-1.0.dev0
---------
+1.0 (unreleased)
+----------------
 
 - Make it work.
   [rnix]

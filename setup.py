@@ -5,7 +5,7 @@ from setuptools import (
 )
 
 
-version = '1.0.dev0'
+version = '1.0pre1'
 shortdesc = 'Location picker widget for YAFOWIL'
 longdesc = open(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
 longdesc += open(os.path.join(os.path.dirname(__file__), 'HISTORY.rst')).read()
