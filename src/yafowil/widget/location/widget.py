@@ -19,7 +19,7 @@ def location_extractor(widget, data):
         return UNSET
     # if lat and no lon given, something went totally wrong
     if lon is None:
-        return ValueError('Malformed request. Cannot extract Coordinates')
+        raise ValueError('Malformed request. Cannot extract Coordinates')
     # return value is empty dict if no coordinates found. needed for
     # generic required extractor to work correctly
     value = dict()

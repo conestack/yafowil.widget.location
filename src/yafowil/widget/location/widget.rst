@@ -32,6 +32,22 @@ Render map widget with defaults value::
     </div>
     <BLANKLINE>
 
+Display renderer is not implemented::
+
+    >>> widget = factory('location', 'default', mode='display')
+    >>> widget()
+
+Widget extraction with invalid request::
+
+    >>> widget = factory('location', 'default', props={'required': True})
+    >>> request = {
+    ...     'default.lat': '',
+    ... }
+    >>> data = widget.extract(request)
+    Traceback (most recent call last):
+      ...
+    ValueError: Malformed request. Cannot extract Coordinates
+
 Widget extraction without preset value::
 
     >>> widget = factory('location', 'default', props={'required': True})
