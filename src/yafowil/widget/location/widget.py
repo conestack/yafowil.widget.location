@@ -1,18 +1,14 @@
-import json
 from node.utils import UNSET
-from yafowil.base import (
-    factory,
-    fetch_value,
-)
+from yafowil.base import factory
+from yafowil.base import fetch_value
 from yafowil.common import generic_required_extractor
-from yafowil.utils import (
-    cssid,
-    cssclasses,
-    css_managed_props,
-    managedprops,
-    attr_value,
-    data_attrs_helper,
-)
+from yafowil.utils import attr_value
+from yafowil.utils import css_managed_props
+from yafowil.utils import cssclasses
+from yafowil.utils import cssid
+from yafowil.utils import data_attrs_helper
+from yafowil.utils import managedprops
+import json
 
 
 def location_extractor(widget, data):
