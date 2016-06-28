@@ -2,8 +2,11 @@
 History
 =======
 
-1.0.1 (unreleased)
-------------------
+1.1 (unreleased)
+----------------
+
+- Use ``yafowil.utils.entry_point`` decorator.
+  [rnix, 2016-06-28]
 
 - Raise ``ValueError`` in ``location_extractor`` if malformed request is
   received.
