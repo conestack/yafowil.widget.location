@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from node.utils import UNSET
 from yafowil.base import factory
 from yafowil.base import fetch_value
@@ -40,7 +41,12 @@ def location_edit_renderer(widget, data):
         'class': 'location-map',
     }
     if (value):
-        map_attrs['data-value'] = json.dumps(value)
+        # use OrderedDict for generating data attribute value to ensure
+        # correct order. Needed for tests.
+        ordered_val = OrderedDict()
+        for key in sorted(value.keys()):
+            ordered_val[key] = value[key]
+        map_attrs['data-value'] = json.dumps(ordered_val)
     map_attrs.update(data_attrs_helper(
         widget, data, ['lat', 'lon', 'zoom', 'min_zoom', 'max_zoom']))
     map = tag('div', ' ', **map_attrs)
