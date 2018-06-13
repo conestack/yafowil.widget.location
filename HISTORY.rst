@@ -5,6 +5,9 @@ History
 1.2 (unreleased)
 ----------------
 
+- Python 3 compatibility.
+  [rnix]
+
 - Convert doctests to unittests.
   [rnix]
 
