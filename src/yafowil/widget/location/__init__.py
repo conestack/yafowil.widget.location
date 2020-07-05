@@ -38,6 +38,6 @@ css = [{
 
 @entry_point(order=10)
 def register():
-    from yafowil.widget.location import widget
+    from yafowil.widget.location import widget  # noqa
     factory.register_theme('default', 'yafowil.widget.location',
                            resourcedir, js=js, css=css)

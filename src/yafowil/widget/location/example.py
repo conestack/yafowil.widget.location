@@ -19,6 +19,7 @@ Location picker widget.
     })
 """
 
+
 def location_example():
     form = factory('fieldset', name='yafowil.widget.location.location')
     form['location'] = factory('#field:location', props={

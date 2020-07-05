@@ -3,7 +3,6 @@ from node.utils import UNSET
 from yafowil.base import factory
 from yafowil.base import fetch_value
 from yafowil.common import generic_required_extractor
-from yafowil.utils import attr_value
 from yafowil.utils import css_managed_props
 from yafowil.utils import cssclasses
 from yafowil.utils import cssid
@@ -92,8 +91,8 @@ factory.register(
     edit_renderers=[location_edit_renderer],
     display_renderers=[location_display_renderer])
 
-factory.doc['blueprint']['location'] = \
-"""Add-on blueprint
+factory.doc['blueprint']['location'] = """\
+Add-on blueprint
 `yafowil.widget.location <http://github.com/bluedynamics/yafowil.widget.location/>`_
 """
 

@@ -1,6 +1,3 @@
-yafowil.widget.location
-=======================
-
 This is the location widget for `yafowil <http://pypi.python.org/pypi/yafowil>`_,
 based on `Leaflet http://leafletjs.org`_
 
@@ -24,4 +21,3 @@ Contributors
 - Robert Niederreiter
 
 - Georg Bernhard
-
