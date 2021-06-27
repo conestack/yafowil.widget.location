@@ -93,7 +93,7 @@ factory.register(
 
 factory.doc['blueprint']['location'] = """\
 Add-on blueprint
-`yafowil.widget.location <http://github.com/bluedynamics/yafowil.widget.location/>`_
+`yafowil.widget.location <http://github.com/conestack/yafowil.widget.location/>`_
 """
 
 factory.defaults['location.class'] = 'location'
