@@ -1,4 +1,12 @@
 *.pyc
 *.pyo
-/src/yafowil.widget.location.egg-info/
+/bin/
 /dist/
+/karma/
+/lib/
+/lib64
+/node_modules/
+/package-lock.json
+/pyvenv.cfg
+/share/
+/src/yafowil.widget.location.egg-info/
