@@ -1,11 +1,12 @@
 import cleanup from 'rollup-plugin-cleanup';
 import {terser} from 'rollup-plugin-terser';
 
+const out_dir = 'src/yafowil/widget/location/resources';
+
 const outro = `
 if (window.yafowil === undefined) {
     window.yafowil = {};
 }
-
 window.yafowil.location = exports;
 `;
 
@@ -16,7 +17,7 @@ export default args => {
             cleanup()
         ],
         output: [{
-            file: 'src/yafowil/widget/location/yafowil.widget.location.js',
+            file: `${out_dir}/widget.js`,
             format: 'iife',
             outro: outro,
             globals: {
@@ -32,7 +33,7 @@ export default args => {
     };
     if (args.configDebug !== true) {
         conf.output.push({
-            file: 'src/yafowil/widget/location/yafowil.widget.location.min.js',
+            file: `${out_dir}/widget.min.js`,
             format: 'iife',
             plugins: [
                 terser()
