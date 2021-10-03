@@ -1,133 +1,180 @@
-/*
- * yafowil location widget
- *
- * Requires: Leaflet, L.GeoSearch
- * Optional: bdajax
- */
+import $ from 'jquery';
+import * as GeoSearch from 'leaflet-geosearch';
 
-if (typeof(window.yafowil) == "undefined") yafowil = {};
+export class LocationWidgetMarkerPopup {
 
-(function($) {
+    constructor(widget, marker) {
+        this.widget = widget;
+        this.marker = marker;
+        this.create_popup();
+    }
 
-    $(document).ready(function() {
-        // initial binding
-        yafowil.location.binder();
+    create_popup() {
+        let popup = document.createElement('a');
+        popup.href = "#";
+        popup.innerHTML = "Remove";
+        popup.onclick = this.remove_handle.bind(this);
+        this.marker.bindPopup(popup);
+    }
 
-        // add after ajax binding if bdajax present
-        if (typeof(window.bdajax) != "undefined") {
-            $.extend(bdajax.binders, {
-                location_binder: yafowil.location.binder
-            });
-        }
-    });
+    remove_handle() {
+        let widget = this.widget;
+        widget.markers.removeLayer(this.marker);
+        widget.lat = '';
+        widget.lon = '';
+        widget.zoom = '';
+        return false;
+    }
+}
 
-    $.extend(yafowil, {
+export class LocationWidgetMarker {
 
-        location: {
+    constructor(widget, lat, lon) {
+        this.widget = widget;
+        let marker = new L.marker([lat, lon], {draggable: true});
+        marker.addTo(widget.markers);
+        new LocationWidgetMarkerPopup(widget, marker);
+        marker.on('dragend', this.dragend_handle.bind(this));
+    }
 
-            binder: function(context) {
-                $('div.location-map', context).each(function() {
-                    yafowil.location.initialize_map($(this));
-                });
-            },
+    dragend_handle(evt) {
+        let latlng = evt.target._latlng,
+            widget = this.widget;
+        widget.lat = latlng.lat;
+        widget.lon = latlng.lng;
+        widget.zoom = widget.map.getZoom();
+    }
+}
 
-            initialize_map: function(elem) {
-                // related lat and lon inputs
-                var wrapper = elem.parent();
-                var input_lat = $('input.location-lat', wrapper);
-                var input_lon = $('input.location-lon', wrapper);
-                var input_zoom = $('input.location-zoom', wrapper);
-                // extract data from DOM
-                var lat = elem.data('lat');
-                var lon = elem.data('lon');
-                var zoom = elem.data('zoom');
-                var min_zoom = elem.data('min_zoom');
-                var max_zoom = elem.data('max_zoom');
-                var value = elem.data('value');
-                // take value data instead of defaults if given
-                // XXX: 0 needs to work as well
-                if (value && value.lat && value.lon) {
-                    lat = value.lat;
-                    lon = value.lon;
-                }
-                // XXX: 0 needs to work as well
-                if (value && value.zoom) {
-                    zoom = value.zoom;
-                }
-                // create map
-                var id = elem.attr('id');
-                var osm =
-                    'Map data © <a href="http://openstreetmap.org">OSM</a>';
-                var map = new L.map(id).setView([lat, lon], zoom);
-                // set OSM tiles
-                var tiles = new L.tileLayer(
-                    '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    {
-                        attribution: osm,
-                        minZoom: min_zoom,
-                        maxZoom: max_zoom
-                    });
-                tiles.addTo(map);
-                // create markers feature group
-                var markers = new L.FeatureGroup();
-                map.addLayer(markers);
-                // create marker helper
-                var create_marker = function(marker_lat, marker_lon) {
-                    var marker = new L.marker(
-                        [marker_lat, marker_lon],
-                        { draggable: true }
-                    );
-                    marker.addTo(markers);
-                    // add remove marker handler
-                    var popup = document.createElement('a');
-                    popup.href = "#";
-                    popup.innerHTML = "Remove";
-                    popup.onclick = function() {
-                        markers.removeLayer(marker);
-                        input_lat.val('');
-                        input_lon.val('');
-                        input_zoom.val('');
-                        return false;
-                    };
-                    marker.bindPopup(popup);
-                    marker.on('dragend', function(evt) {
-                        input_lat.val(evt.target._latlng.lat);
-                        input_lon.val(evt.target._latlng.lng);
-                        input_zoom.val(map.getZoom());
-                    });
-                };
-                // add marker if value given
-                if (value) {
-                    create_marker(value.lat, value.lon);
-                }
-                // add or move marker on map click
-                map.on('click', function(evt) {
-                    // XXX: confirmation dialog
-                    markers.clearLayers();
-                    create_marker(evt.latlng.lat, evt.latlng.lng);
-                    input_lat.val(evt.latlng.lat);
-                    input_lon.val(evt.latlng.lng);
-                    input_zoom.val(map.getZoom());
-                });
-                // add geosearch widget
-                var geosearch = new L.Control.GeoSearch({
-                    provider: new L.GeoSearch.Provider.OpenStreetMap(),
-                    position: 'topright',
-                    showMarker: false
-                })
-                geosearch.addTo(map);
-                // show result label on geo search submit and focus map
-                map.on('geosearch_showlocation', function(result) {
-                    // XXX: find out how to set focus on map again
-                    var res = geosearch._resultslist;
-                    res.innerHTML = '<li>' + result.Location.Label + '</li>';
-                    res.style.display = 'block';
-                    setTimeout(function () {
-                        res.style.display = 'none';
-                    }, 3000);
-                });
+export class LocationWidgetSearch {
+
+    constructor(widget) {
+        this.widget = widget;
+        // add geosearch widget
+        let geosearch = this.geosearch = new GeoSearch.GeoSearchControl({
+            provider: new GeoSearch.OpenStreetMapProvider()
+        });
+        widget.map.addControl(geosearch);
+        // show result label on geo search submit and focus map
+        widget.map.on('geosearch_showlocation', this.geosearch_handle.bind(this));
+    }
+
+    geosearch_handle(result) {
+        // XXX: find out how to set focus on map again
+        let res = this.geosearch._resultslist;
+        res.innerHTML = `<li>${result.Location.Label}</li>`;
+        res.style.display = 'block';
+        setTimeout(function () {
+            res.style.display = 'none';
+        }, 3000);
+    }
+}
+
+export class LocationWidget {
+
+    static initialize(context) {
+        $('div.location-map', context).each(function() {
+            new LocationWidget($(this));
+        });
+    }
+
+    constructor(elem) {
+        this.elem = elem;
+        this.id = elem.attr('id');
+        // form inputs
+        let wrapper = elem.parent();
+        this._input_lat = $('input.location-lat', wrapper);
+        this._input_lon = $('input.location-lon', wrapper);
+        this._input_zoom = $('input.location-zoom', wrapper);
+        // settings
+        this.min_zoom = elem.data('min_zoom');
+        this.max_zoom = elem.data('max_zoom');
+        // default value
+        this._lat = elem.data('lat');
+        this._lon = elem.data('lon');
+        this._zoom = elem.data('zoom');
+        // current value
+        this.value = this.elem.data('value');
+        this.create_map();
+        new LocationWidgetSearch(this);
+    }
+
+    get value() {
+        return this._value;
+    }
+
+    set value(val) {
+        this._value = val;
+        if (val) {
+            if (val.lat !== undefined && val.lon !== undefined) {
+                this._lat = val.lat;
+                this._lon = val.lon;
+            }
+            if (val.zoom !== undefined) {
+                this._zoom = val.zoom;
             }
         }
-    });
+    }
 
-})(jQuery);
+    get lat() {
+        return this._lat;
+    }
+
+    set lat(val) {
+        this._lat = val;
+        this._input_lat.val(val);
+    }
+
+    get lon() {
+        return this._lon;
+    }
+
+    set lon(val) {
+        this._lon = val;
+        this._input_lon.val(val);
+    }
+
+    get zoom() {
+        return this._zoom;
+    }
+
+    set zoom(val) {
+        this._zoom = val;
+        this._input_zoom.val(val);
+    }
+
+    create_map() {
+        // create map
+        let osm = 'Map data © <a href="http://openstreetmap.org">OSM</a>';
+        let map = this.map = new L.map(this.id);
+        this.map.setView([this.lat, this.lon], this.zoom);
+        // set OSM tiles
+        let tiles = new L.tileLayer(
+            '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            {
+                attribution: osm,
+                minZoom: this.min_zoom,
+                maxZoom: this.max_zoom
+            });
+        tiles.addTo(map);
+        // create markers feature group
+        let markers = this.markers = new L.FeatureGroup();
+        map.addLayer(markers);
+        // add marker if value given
+        if (this.value) {
+            new LocationWidgetMarker(this, this.lat, this.lon);
+        }
+        // add or move marker on map click
+        map.on('click', this.click_handle.bind(this));
+    }
+
+    click_handle(evt) {
+        // XXX: confirmation dialog
+        this.markers.clearLayers();
+        let latlng = evt.latlng;
+        new LocationWidgetMarker(this, latlng.lat, latlng.lng);
+        this.lat = latlng.lat;
+        this.lon = latlng.lng;
+        this.zoom = this.map.getZoom();
+    }
+}

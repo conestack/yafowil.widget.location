@@ -6,16 +6,12 @@ import os
 resourcedir = os.path.join(os.path.dirname(__file__), 'resources')
 js = [{
     'group': 'yafowil.widget.location.dependencies',
-    'resource': 'Leaflet/leaflet-src.js',
+    'resource': 'leaflet/leaflet-src.js',
     'order': 20,
 }, {
     'group': 'yafowil.widget.location.dependencies',
-    'resource': 'L.GeoSearch/l.control.geosearch.js',
+    'resource': 'leaflet-geosearch/geosearch.umd.js',
     'order': 21,
-}, {
-    'group': 'yafowil.widget.location.dependencies',
-    'resource': 'L.GeoSearch/l.geosearch.provider.openstreetmap.js',
-    'order': 22,
 }, {
     'group': 'yafowil.widget.location.common',
     'resource': 'widget.js',
@@ -23,11 +19,11 @@ js = [{
 }]
 css = [{
     'group': 'yafowil.widget.location.dependencies',
-    'resource': 'Leaflet/leaflet.css',
+    'resource': 'leaflet/leaflet.css',
     'order': 20,
 }, {
     'group': 'yafowil.widget.location.dependencies',
-    'resource': 'L.GeoSearch/l.geosearch.css',
+    'resource': 'leaflet-geosearch/geosearch.css',
     'order': 21,
 }, {
     'group': 'yafowil.widget.location.common',
