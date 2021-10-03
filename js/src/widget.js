@@ -51,21 +51,27 @@ export class LocationWidgetSearch {
         this.widget = widget;
         // add geosearch widget
         let geosearch = this.geosearch = new GeoSearch.GeoSearchControl({
-            provider: new GeoSearch.OpenStreetMapProvider()
+            provider: new GeoSearch.OpenStreetMapProvider(),
+            style: 'bar',
+            autoClose: true
         });
         widget.map.addControl(geosearch);
         // show result label on geo search submit and focus map
-        widget.map.on('geosearch_showlocation', this.geosearch_handle.bind(this));
+        widget.map.on(
+            'geosearch/showlocation',
+            this.showloaction_handle.bind(this)
+        );
     }
 
-    geosearch_handle(result) {
-        // XXX: find out how to set focus on map again
-        let res = this.geosearch._resultslist;
-        res.innerHTML = `<li>${result.Location.Label}</li>`;
-        res.style.display = 'block';
-        setTimeout(function () {
-            res.style.display = 'none';
-        }, 3000);
+    showloaction_handle(result) {
+        let location = result.location,
+            lat = location.y,
+            lon = location.x,
+            widget = this.widget;
+        widget.markers.clearLayers();
+        new LocationWidgetMarker(widget, lat, lon);
+        widget.lat = lat;
+        widget.lon = lon;
     }
 }
 

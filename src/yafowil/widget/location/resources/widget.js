@@ -43,18 +43,25 @@
         constructor(widget) {
             this.widget = widget;
             let geosearch = this.geosearch = new GeoSearch.GeoSearchControl({
-                provider: new GeoSearch.OpenStreetMapProvider()
+                provider: new GeoSearch.OpenStreetMapProvider(),
+                style: 'bar',
+                autoClose: true
             });
             widget.map.addControl(geosearch);
-            widget.map.on('geosearch_showlocation', this.geosearch_handle.bind(this));
+            widget.map.on(
+                'geosearch/showlocation',
+                this.showloaction_handle.bind(this)
+            );
         }
-        geosearch_handle(result) {
-            let res = this.geosearch._resultslist;
-            res.innerHTML = `<li>${result.Location.Label}</li>`;
-            res.style.display = 'block';
-            setTimeout(function () {
-                res.style.display = 'none';
-            }, 3000);
+        showloaction_handle(result) {
+            let location = result.location,
+                lat = location.y,
+                lon = location.x,
+                widget = this.widget;
+            widget.markers.clearLayers();
+            new LocationWidgetMarker(widget, lat, lon);
+            widget.lat = lat;
+            widget.lon = lon;
         }
     }
     class LocationWidget {
