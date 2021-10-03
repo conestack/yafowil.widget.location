@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import * as GeoSearch from 'leaflet-geosearch';
 
 export class LocationWidgetMarkerPopup {
 
