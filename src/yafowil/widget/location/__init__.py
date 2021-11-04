@@ -6,7 +6,7 @@ import os
 resourcedir = os.path.join(os.path.dirname(__file__), 'resources')
 js = [{
     'group': 'yafowil.widget.location.dependencies',
-    'resource': 'leaflet/leaflet-src.js',
+    'resource': 'leaflet/leaflet.js',
     'order': 20,
 }, {
     'group': 'yafowil.widget.location.dependencies',
