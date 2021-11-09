@@ -1,10 +1,30 @@
 Changes
 =======
 
-1.3 (unreleased)
+2.0 (unreleased)
 ----------------
 
-- No changes yet.
+- Consider ``emptyvalue`` at extraction time.
+  [rnix]
+
+- Introdude ``factory`` widget property. Defines a factory which is used to
+  instance ectraction value.
+  [rnix]
+
+- Introduce ``extract_zoom`` widget property. Defines whether to include
+  zoom level on extracted value.
+  [rnix]
+
+- Rewrite Javascript with ES6 classes.
+  [rnix]
+
+- Update leaflet to 1.7.1 and leaflet-geosearch to 3.5.0.
+  [rnix]
+
+**Breaking changes**
+
+- Empty extration value is ``None`` instead of empty dictionary.
+  [rnix]
 
 
 1.2 (2018-07-16)

@@ -115,7 +115,7 @@ class TestLocationWidget(YafowilTestCase):
             data.errors,
             [ExtractionError('Mandatory field was empty')]
         )
-        self.assertEqual(data.extracted, {})
+        self.assertEqual(data.extracted, None)
 
         request = {
             'default.lat': '47.2667',
@@ -172,7 +172,7 @@ class TestLocationWidget(YafowilTestCase):
             data.errors,
             [ExtractionError('Mandatory field was empty')]
         )
-        self.assertEqual(data.extracted, {})
+        self.assertEqual(data.extracted, None)
         self.check_output("""
         <div class="location-wrapper error location" id="location-default">
           <div class="location-map" data-lat="47.2667" data-lon="11.3833"

@@ -3,6 +3,7 @@ from node.utils import UNSET
 from yafowil.base import factory
 from yafowil.base import fetch_value
 from yafowil.common import generic_required_extractor
+from yafowil.utils import attr_value
 from yafowil.utils import css_managed_props
 from yafowil.utils import cssclasses
 from yafowil.utils import cssid
@@ -11,6 +12,7 @@ from yafowil.utils import managedprops
 import json
 
 
+@managedprops('extract_zoom', 'factory', 'emptyvalue')
 def location_extractor(widget, data):
     lat = data.request.get('{0}.lat'.format(widget.dottedpath))
     lon = data.request.get('{0}.lon'.format(widget.dottedpath))
@@ -20,12 +22,12 @@ def location_extractor(widget, data):
     # if lat and no lon given, something went totally wrong
     if lon is None:
         raise ValueError('Malformed request. Cannot extract Coordinates')
-    # return value is empty dict if no coordinates found. needed for
-    # generic required extractor to work correctly
-    value = dict()
-    if lat:
-        value['lat'] = float(lat)
-        value['lon'] = float(lon)
+    if not lat:
+        return attr_value('emptyvalue', widget, data)
+    value = widget.attrs['factory']()
+    value['lat'] = float(lat)
+    value['lon'] = float(lon)
+    if attr_value('extract_zoom', widget, data):
         value['zoom'] = int(zoom)
     return value
 
@@ -87,9 +89,17 @@ def location_display_renderer(widget, data):
 
 factory.register(
     'location',
-    extractors=[location_extractor, generic_required_extractor],
-    edit_renderers=[location_edit_renderer],
-    display_renderers=[location_display_renderer])
+    extractors=[
+        location_extractor,
+        generic_required_extractor
+    ],
+    edit_renderers=[
+        location_edit_renderer
+    ],
+    display_renderers=[
+        location_display_renderer
+    ]
+)
 
 factory.doc['blueprint']['location'] = """\
 Add-on blueprint
@@ -103,6 +113,8 @@ factory.defaults['location.required'] = False
 factory.defaults['location.error_class'] = 'error'
 
 factory.defaults['location.message_class'] = 'errormessage'
+
+factory.defaults['location.emptyvalue'] = None
 
 factory.defaults['location.lat'] = 47.2667
 factory.doc['props']['location.lat'] = """\
@@ -127,4 +139,14 @@ Minimum map zoom level.
 factory.defaults['location.max_zoom'] = 18
 factory.doc['props']['location.min_zoom'] = """\
 Maximum map zoom level.
+"""
+
+factory.defaults['location.extract_zoom'] = True
+factory.doc['props']['location.extract_zoom'] = """\
+Flag whether to include zoom level when extracting value from request.
+"""
+
+factory.defaults['location.factory'] = dict
+factory.doc['props']['location.factory'] = """\
+A class used as factory for creating location value at extraction time.
 """
