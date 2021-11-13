@@ -77,6 +77,10 @@
             this._input_lat = $('input.location-lat', wrapper);
             this._input_lon = $('input.location-lon', wrapper);
             this._input_zoom = $('input.location-zoom', wrapper);
+            this.change_lat_handle = this.change_lat_handle.bind(this);
+            this._input_lat.on('change', this.change_lat_handle);
+            this.change_lon_handle = this.change_lon_handle.bind(this);
+            this._input_lon.on('change', this.change_lon_handle);
             this.min_zoom = elem.data('min_zoom');
             this.max_zoom = elem.data('max_zoom');
             this._lat = elem.data('lat');
@@ -148,6 +152,25 @@
             this.lat = latlng.lat;
             this.lon = latlng.lng;
             this.zoom = this.map.getZoom();
+        }
+        change_val(elem, name) {
+            let val = parseFloat(elem.val());
+            if (isNaN(val)) {
+                elem.val(this[name]);
+                return;
+            }
+            this[name] = val;
+            this.markers.clearLayers();
+            new LocationWidgetMarker(this, this.lat, this.lon);
+            this.map.setView([this.lat, this.lon], this.zoom);
+        }
+        change_lat_handle(evt) {
+            evt.preventDefault();
+            this.change_val($(evt.currentTarget), '_lat');
+        }
+        change_lon_handle(evt) {
+            evt.preventDefault();
+            this.change_val($(evt.currentTarget), '_lon');
         }
     }
 
