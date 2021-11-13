@@ -66,6 +66,32 @@ class TestLocationWidget(YafowilTestCase):
         </div>
         """, fxml(widget()))
 
+    def test_render_with_lat_lon_shown(self):
+        widget = factory(
+            'location',
+            name='default',
+            props={
+                'show_lat_lon': True
+            })
+        self.check_output("""
+        <div class="location-wrapper location" id="location-default">
+          <div class="location-map" data-lat="47.2667" data-lon="11.3833"
+               data-max_zoom="18" data-min_zoom="2" data-zoom="12"
+               id="location-map-default">
+          </div>
+          <label class="location-lat-label control-label"
+                 for="default.lat">Latitude:</label>
+          <input class="location-lat form-control"
+                 id="location-lat-default" name="default.lat" type="text"/>
+          <label class="location-lon-label control-label"
+                 for="default.lon">Longitude:</label>
+          <input class="location-lon form-control"
+                 id="location-lon-default" name="default.lon" type="text"/>
+          <input class="location-zoom" id="location-zoom-default"
+                 name="default.zoom" type="hidden"/>
+        </div>
+        """, fxml(widget()))
+
     def test_render_display_not_implemented(self):
         # Display renderer is not implemented
         widget = factory(
@@ -180,9 +206,9 @@ class TestLocationWidget(YafowilTestCase):
                id="location-map-default">
           </div>
           <input class="location-lat" id="location-lat-default"
-                 name="default.lat" type="hidden"/>
+                 name="default.lat" type="hidden" value=""/>
           <input class="location-lon" id="location-lon-default"
-                 name="default.lon" type="hidden"/>
+                 name="default.lon" type="hidden" value=""/>
           <input class="location-zoom" id="location-zoom-default"
                  name="default.zoom" type="hidden"/>
         </div>
@@ -215,6 +241,51 @@ class TestLocationWidget(YafowilTestCase):
                  name="default.zoom" type="hidden" value="8"/>
         </div>
         """, fxml(widget(data=data)))
+
+    def test_extraction_errors(self):
+        widget = factory(
+            'location',
+            name='default')
+
+        request = {
+            'default.lat': 'a',
+            'default.lon': ''
+        }
+        data = widget.extract(request)
+        self.assertEqual(
+            data.errors,
+            [ExtractionError('Latitude is not floating point number')]
+        )
+
+        request = {
+            'default.lat': '1',
+            'default.lon': 'a'
+        }
+        data = widget.extract(request)
+        self.assertEqual(
+            data.errors,
+            [ExtractionError('Longitude is not floating point number')]
+        )
+
+        request = {
+            'default.lat': '91',
+            'default.lon': '0'
+        }
+        data = widget.extract(request)
+        self.assertEqual(
+            data.errors,
+            [ExtractionError('Latitude must be between -90 and +90 degrees')]
+        )
+
+        request = {
+            'default.lat': '0',
+            'default.lon': '181'
+        }
+        data = widget.extract(request)
+        self.assertEqual(
+            data.errors,
+            [ExtractionError('Longitude must be between -180 and +180 degrees')]
+        )
 
 
 if __name__ == '__main__':

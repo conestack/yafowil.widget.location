@@ -18,6 +18,8 @@ _ = TSF('yafowil.widget.loaction')
 
 
 def request_value(widget, data, name):
+    if not data.request:
+        return None
     return data.request.get('{0}.{1}'.format(widget.dottedpath, name))
 
 
@@ -31,7 +33,7 @@ def location_extractor(widget, data):
     # if lat and no lon given, something went totally wrong
     if lon is None:
         raise ValueError('Malformed request. Cannot extract Coordinates')
-    if not lat:
+    if not lat and not lon:
         return attr_value('emptyvalue', widget, data)
     value = widget.attrs['factory']()
     try:

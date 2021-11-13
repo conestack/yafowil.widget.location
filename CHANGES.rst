@@ -4,6 +4,10 @@ Changes
 2.0 (unreleased)
 ----------------
 
+- Introduce ``show_lat_lon`` widget property. If True, latitude and longtude
+  additionally can be entered manually in inpuf fields.
+  [rnix]
+
 - Consider ``emptyvalue`` at extraction time.
   [rnix]
 
