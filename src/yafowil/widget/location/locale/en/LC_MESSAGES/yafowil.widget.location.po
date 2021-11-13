@@ -1,0 +1,31 @@
+#. Default: Latitude is not floating point number
+#: src/yafowil/widget/location/widget.py:36
+msgid "latitude_is_no_float"
+msgstr ""
+
+#. Default: Longitude is not floating point number
+#: src/yafowil/widget/location/widget.py:43
+msgid "longitude_is_no_float"
+msgstr ""
+
+#. Default: Latitude must be between -90 and +90 degrees
+#: src/yafowil/widget/location/widget.py:48
+msgid "latitude_invalid_range"
+msgstr ""
+
+#. Default: Longitude must be between -180 and +180 degrees
+#: src/yafowil/widget/location/widget.py:53
+msgid "longitude_invalid_range"
+msgstr ""
+
+#. Default: Latitude:
+#. create label and input for lat
+#: src/yafowil/widget/location/widget.py:86
+msgid "latitude"
+msgstr ""
+
+#. Default: Longitude:
+#. create label and input for lon
+#: src/yafowil/widget/location/widget.py:98
+msgid "longitude"
+msgstr ""

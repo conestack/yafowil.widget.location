@@ -1,8 +1,10 @@
 from collections import OrderedDict
 from node.utils import UNSET
+from yafowil.base import ExtractionError
 from yafowil.base import factory
 from yafowil.base import fetch_value
 from yafowil.common import generic_required_extractor
+from yafowil.tsf import TSF
 from yafowil.utils import attr_value
 from yafowil.utils import css_managed_props
 from yafowil.utils import cssclasses
@@ -12,11 +14,18 @@ from yafowil.utils import managedprops
 import json
 
 
+_ = TSF('yafowil.widget.loaction')
+
+
+def request_value(widget, data, name):
+    return data.request.get('{0}.{1}'.format(widget.dottedpath, name))
+
+
 @managedprops('extract_zoom', 'factory', 'emptyvalue')
 def location_extractor(widget, data):
-    lat = data.request.get('{0}.lat'.format(widget.dottedpath))
-    lon = data.request.get('{0}.lon'.format(widget.dottedpath))
-    zoom = data.request.get('{0}.zoom'.format(widget.dottedpath))
+    lat = request_value(widget, data, 'lat')
+    lon = request_value(widget, data, 'lon')
+    zoom = request_value(widget, data, 'zoom')
     if lat is None:
         return UNSET
     # if lat and no lon given, something went totally wrong
@@ -25,11 +34,87 @@ def location_extractor(widget, data):
     if not lat:
         return attr_value('emptyvalue', widget, data)
     value = widget.attrs['factory']()
-    value['lat'] = float(lat)
-    value['lon'] = float(lon)
+    try:
+        value['lat'] = float(lat)
+    except ValueError:
+        raise ExtractionError(_(
+            'latitude_is_no_float',
+            default='Latitude is not floating point number'
+        ))
+    try:
+        value['lon'] = float(lon)
+    except ValueError:
+        raise ExtractionError(_(
+            'longitude_is_no_float',
+            default='Longitude is not floating point number'
+        ))
+    if value['lat'] < -90 or value['lat'] > 90:
+        raise ExtractionError(_(
+            'latitude_invalid_range',
+            default='Latitude must be between -90 and +90 degrees'
+        ))
+    if value['lon'] < -180 or value['lon'] > 180:
+        raise ExtractionError(_(
+            'longitude_invalid_range',
+            default='Longitude must be between -180 and +180 degrees'
+        ))
     if attr_value('extract_zoom', widget, data):
         value['zoom'] = int(zoom)
     return value
+
+
+def input_value(widget, data, value, name):
+    return value[name] if value else request_value(widget, data, name)
+
+
+def lat_lon_hidden_renderer_helper(widget, data, value):
+    tag = data.tag
+    # create hidden input for lat
+    lat = tag('input', **{
+        'type': 'hidden',
+        'name': '{0}.lat'.format(widget.dottedpath),
+        'value': input_value(widget, data, value, 'lat'),
+        'id': cssid(widget, 'location-lat'),
+        'class': 'location-lat',
+    })
+    # create hidden input for lon
+    lon = tag('input', **{
+        'type': 'hidden',
+        'name': '{0}.lon'.format(widget.dottedpath),
+        'value': input_value(widget, data, value, 'lon'),
+        'id': cssid(widget, 'location-lon'),
+        'class': 'location-lon',
+    })
+    return [lat, lon]
+
+
+def lat_lon_input_renderer_helper(widget, data, value):
+    tag = data.tag
+    # create label and input for lat
+    lat_label = tag('label', _('latitude', default='Latitude:'), **{
+        'for': '{0}.lat'.format(widget.dottedpath),
+        'class': 'location-lat-label control-label',
+    })
+    lat = tag('input', **{
+        'type': 'text',
+        'name': '{0}.lat'.format(widget.dottedpath),
+        'value': input_value(widget, data, value, 'lat'),
+        'id': cssid(widget, 'location-lat'),
+        'class': 'location-lat form-control',
+    })
+    # create label and input for lon
+    lon_label = tag('label', _('longitude', default='Longitude:'), **{
+        'for': '{0}.lon'.format(widget.dottedpath),
+        'class': 'location-lon-label control-label',
+    })
+    lon = tag('input', **{
+        'type': 'text',
+        'name': '{0}.lon'.format(widget.dottedpath),
+        'value': input_value(widget, data, value, 'lon'),
+        'id': cssid(widget, 'location-lon'),
+        'class': 'location-lon form-control',
+    })
+    return [lat_label, lat, lon_label, lon]
 
 
 @managedprops('lat', 'lon', 'zoom', *css_managed_props)
@@ -50,33 +135,22 @@ def location_edit_renderer(widget, data):
         map_attrs['data-value'] = json.dumps(ordered_val)
     map_attrs.update(data_attrs_helper(
         widget, data, ['lat', 'lon', 'zoom', 'min_zoom', 'max_zoom']))
-    map = tag('div', ' ', **map_attrs)
-    # create hidden input for lat
-    lat = tag('input', **{
-        'type': 'hidden',
-        'name': '{0}.lat'.format(widget.dottedpath),
-        'value': value and value['lat'] or None,
-        'id': cssid(widget, 'location-lat'),
-        'class': 'location-lat',
-    })
-    # create hidden input for lon
-    lon = tag('input', **{
-        'type': 'hidden',
-        'name': '{0}.lon'.format(widget.dottedpath),
-        'value': value and value['lon'] or None,
-        'id': cssid(widget, 'location-lon'),
-        'class': 'location-lon',
-    })
+    map_ = tag('div', ' ', **map_attrs)
     # create hidden input for current zoom
     zoom = tag('input', **{
         'type': 'hidden',
         'name': '{0}.zoom'.format(widget.dottedpath),
-        'value': value and value.get('zoom') or None,
+        'value': value.get('zoom') if value else None,
         'id': cssid(widget, 'location-zoom'),
         'class': 'location-zoom',
     })
     # create location widget wrapper
-    wrapper = tag('div', map, lat, lon, zoom, **{
+    children = [map_] + (
+        lat_lon_input_renderer_helper(widget, data, value)
+        if attr_value('show_lat_lon', widget, data)
+        else lat_lon_hidden_renderer_helper(widget, data, value)
+    ) + [zoom]
+    wrapper = tag('div', *children, **{
         'id': cssid(widget, 'location'),
         'class': ' '.join(['location-wrapper', cssclasses(widget, data)]),
     })
@@ -149,4 +223,9 @@ Flag whether to include zoom level when extracting value from request.
 factory.defaults['location.factory'] = dict
 factory.doc['props']['location.factory'] = """\
 A class used as factory for creating location value at extraction time.
+"""
+
+factory.defaults['location.show_lat_lon'] = False
+factory.doc['props']['location.show_lat_lon'] = """\
+Flag whether to show lat lon inputs for direct value input.
 """
