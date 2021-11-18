@@ -30,7 +30,7 @@ export class LocationWidgetMarker {
 
     constructor(widget, lat, lon) {
         this.widget = widget;
-        let marker = new L.marker([lat, lon], {draggable: true});
+        let marker = new L.Marker([lat, lon], {draggable: true});
         marker.addTo(widget.markers);
         new LocationWidgetMarkerPopup(widget, marker);
         marker.on('dragend', this.dragend_handle.bind(this));
@@ -99,6 +99,7 @@ export class LocationWidget {
         // settings
         this.min_zoom = elem.data('min_zoom');
         this.max_zoom = elem.data('max_zoom');
+        this.tile_layers = elem.data('tile_layers');
         // default value
         this._lat = elem.data('lat');
         this._lon = elem.data('lon');
@@ -155,18 +156,14 @@ export class LocationWidget {
 
     create_map() {
         // create map
-        let osm = 'Map data © <a href="http://openstreetmap.org">OSM</a>';
-        let map = this.map = new L.map(this.id);
+        let map = this.map = new L.Map(this.id);
         this.map.setView([this.lat, this.lon], this.zoom);
-        // set OSM tiles
-        let tiles = new L.tileLayer(
-            '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            {
-                attribution: osm,
-                minZoom: this.min_zoom,
-                maxZoom: this.max_zoom
-            });
-        tiles.addTo(map);
+        // create tile layers
+        for (let layer of this.tile_layers) {
+            layer.options.minZoom = this.min_zoom;
+            layer.options.maxZoom = this.max_zoom;
+            new L.TileLayer(layer.urlTemplate, layer.options).addTo(map);
+        }
         // create markers feature group
         let markers = this.markers = new L.FeatureGroup();
         map.addLayer(markers);

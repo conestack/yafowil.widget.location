@@ -135,8 +135,9 @@ def location_edit_renderer(widget, data):
         for key in sorted(value.keys()):
             ordered_val[key] = value[key]
         map_attrs['data-value'] = json.dumps(ordered_val)
-    map_attrs.update(data_attrs_helper(
-        widget, data, ['lat', 'lon', 'zoom', 'min_zoom', 'max_zoom']))
+    map_attrs.update(data_attrs_helper(widget, data, [
+        'lat', 'lon', 'zoom', 'min_zoom', 'max_zoom', 'tile_layers'
+    ]))
     map_ = tag('div', ' ', **map_attrs)
     # create hidden input for current zoom
     zoom = tag('input', **{
@@ -230,4 +231,14 @@ A class used as factory for creating location value at extraction time.
 factory.defaults['location.show_lat_lon'] = False
 factory.doc['props']['location.show_lat_lon'] = """\
 Flag whether to show lat lon inputs for direct value input.
+"""
+
+factory.defaults['location.tile_layers'] = [{
+    'urlTemplate': '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    'options': {
+        'attribution': 'Map data © &lt;a href="http://openstreetmap.org"&gt;OSM&lt;/a&gt;'
+    }
+}]
+factory.doc['props']['location.tile_layers'] = """\
+List of tile layers to create for location map widget.
 """
