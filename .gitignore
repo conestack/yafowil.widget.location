@@ -2,7 +2,7 @@
 *.pyo
 /bin/
 /dist/
-/karma/
+/js/karma/
 /lib/
 /lib64
 /node_modules/
