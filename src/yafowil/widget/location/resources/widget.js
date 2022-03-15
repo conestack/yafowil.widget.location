@@ -1,4 +1,4 @@
-(function (exports, $) {
+var yafowil_location = (function (exports, $) {
     'use strict';
 
     class LocationWidgetMarkerPopup {
@@ -198,4 +198,3 @@
     return exports;
 
 })({}, jQuery);
-//# sourceMappingURL=widget.js.map

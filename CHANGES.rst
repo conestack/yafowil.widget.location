@@ -4,6 +4,9 @@ Changes
 2.0 (unreleased)
 ----------------
 
+- Rewrite JavaScript using ES6.
+  [rnix]
+
 - Introduce ``show_lat_lon`` widget property. If True, latitude and longtude
   additionally can be entered manually in inpuf fields.
   [rnix]

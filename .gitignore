@@ -1,5 +1,6 @@
 *.pyc
 *.pyo
+/.coverage
 /bin/
 /dist/
 /js/karma/
