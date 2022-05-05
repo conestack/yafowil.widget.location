@@ -84,6 +84,7 @@ export class LocationWidget {
     }
 
     constructor(elem) {
+        elem.data('location', this);
         this.elem = elem;
         this.id = elem.attr('id');
         // form inputs

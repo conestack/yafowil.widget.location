@@ -3,6 +3,7 @@
 /.coverage
 /bin/
 /dist/
+/include/
 /js/karma/
 /lib/
 /lib64
