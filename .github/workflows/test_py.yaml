@@ -1,7 +1,9 @@
-name: Test location
+name: PY Test location
 
 on:
   push:
+    paths:
+    - '**.py'
 
 jobs:
   test:
