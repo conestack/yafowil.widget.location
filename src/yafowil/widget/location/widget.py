@@ -14,7 +14,7 @@ from yafowil.utils import managedprops
 import json
 
 
-_ = TSF('yafowil.widget.loaction')
+_ = TSF('yafowil.widget.location')
 
 
 def request_value(widget, data, name):
