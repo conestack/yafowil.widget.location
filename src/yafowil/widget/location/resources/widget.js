@@ -71,6 +71,7 @@ var yafowil_location = (function (exports, $) {
             });
         }
         constructor(elem) {
+            elem.data('location', this);
             this.elem = elem;
             this.id = elem.attr('id');
             let wrapper = elem.parent();
