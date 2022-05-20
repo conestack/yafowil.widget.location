@@ -14,6 +14,6 @@ QUnit.test('test', assert => {
         .appendTo('body');
 
     LocationWidget.initialize();
-    let widget = el.data('location');
+    let widget = el.data('yafowil-location');
     assert.ok(widget);
 });
