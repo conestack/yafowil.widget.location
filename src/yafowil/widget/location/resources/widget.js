@@ -71,7 +71,7 @@ var yafowil_location = (function (exports, $) {
             });
         }
         constructor(elem) {
-            elem.data('location', this);
+            elem.data('yafowil-location', this);
             this.elem = elem;
             this.id = elem.attr('id');
             let wrapper = elem.parent();
@@ -190,9 +190,7 @@ var yafowil_location = (function (exports, $) {
     Object.defineProperty(exports, '__esModule', { value: true });
 
 
-    if (window.yafowil === undefined) {
-        window.yafowil = {};
-    }
+    window.yafowil = window.yafowil || {};
     window.yafowil.location = exports;
 
 
