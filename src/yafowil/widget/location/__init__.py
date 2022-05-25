@@ -13,33 +13,28 @@ resources_dir = os.path.join(os.path.dirname(__file__), 'resources')
 
 # webresource ################################################################
 
-scripts = wr.ResourceGroup(name='scripts')
+scripts = wr.ResourceGroup(name='yafowil-location-scripts')
 scripts.add(wr.ScriptResource(
     name='leaflet-js',
-    # actually it not depends on jquery, but yafowil-location-js does
-    # think about multiple depends values in webresource
-    depends='jquery-js',
     directory=os.path.join(resources_dir, 'leaflet'),
     resource='leaflet-src.js',
     compressed='leaflet.js'
 ))
 scripts.add(wr.ScriptResource(
     name='leaflet-geosearch-js',
-    # actually it not depends on jquery, but yafowil-location-js does
-    # think about multiple depends values in webresource
     depends='leaflet-js',
     directory=os.path.join(resources_dir, 'leaflet-geosearch'),
     resource='geosearch.umd.js'
 ))
 scripts.add(wr.ScriptResource(
     name='yafowil-location-js',
-    depends='leaflet-geosearch-js',
+    depends=['jquery-js', 'leaflet-geosearch-js'],
     directory=resources_dir,
     resource='widget.js',
     compressed='widget.min.js'
 ))
 
-styles = wr.ResourceGroup(name='styles')
+styles = wr.ResourceGroup(name='yafowil-location-styles')
 styles.add(wr.StyleResource(
     name='leaflet-css',
     directory=os.path.join(resources_dir, 'leaflet'),
@@ -57,10 +52,6 @@ styles.add(wr.StyleResource(
     directory=resources_dir,
     resource='widget.css'
 ))
-
-resources = wr.ResourceGroup(name='location-resources')
-resources.add(scripts)
-resources.add(styles)
 
 # B/C resources ##############################################################
 
@@ -103,5 +94,7 @@ def register():
     # Default
     factory.register_theme(
         'default', 'yafowil.widget.location', resources_dir,
-        js=js, css=css, resources=resources
+        js=js, css=css
     )
+    factory.register_scripts('default', 'yafowil.widget.location', scripts)
+    factory.register_styles('default', 'yafowil.widget.location', styles)
