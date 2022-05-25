@@ -13,7 +13,10 @@ resources_dir = os.path.join(os.path.dirname(__file__), 'resources')
 
 # webresource ################################################################
 
-scripts = wr.ResourceGroup(name='yafowil-location-scripts')
+scripts = wr.ResourceGroup(
+    name='yafowil-location-scripts',
+    path='yafowil.widget.location'
+)
 scripts.add(wr.ScriptResource(
     name='leaflet-js',
     directory=os.path.join(resources_dir, 'leaflet'),
@@ -34,7 +37,10 @@ scripts.add(wr.ScriptResource(
     compressed='widget.min.js'
 ))
 
-styles = wr.ResourceGroup(name='yafowil-location-styles')
+styles = wr.ResourceGroup(
+    name='yafowil-location-styles',
+    path='yafowil.widget.location'
+)
 styles.add(wr.StyleResource(
     name='leaflet-css',
     directory=os.path.join(resources_dir, 'leaflet'),
