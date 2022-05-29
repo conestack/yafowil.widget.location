@@ -24,7 +24,7 @@ class TestLocationWidget(YafowilTestCase):
         widget = factory(
             'location',
             name='default')
-        self.check_output("""
+        self.checkOutput("""
         <div class="location-wrapper location" id="location-default">
           <div class="location-map" data-lat="47.2667" data-lon="11.3833"
                data-max_zoom="18" data-min_zoom="2" data-tile_layers="[...]"
@@ -50,7 +50,7 @@ class TestLocationWidget(YafowilTestCase):
             'location',
             name='default',
             value=value)
-        self.check_output("""
+        self.checkOutput("""
         <div class="location-wrapper location" id="location-default">
           <div class="location-map" data-lat="47.2667" data-lon="11.3833"
                data-max_zoom="18" data-min_zoom="2"
@@ -74,7 +74,7 @@ class TestLocationWidget(YafowilTestCase):
             props={
                 'show_lat_lon': True
             })
-        self.check_output("""
+        self.checkOutput("""
         <div class="location-wrapper location" id="location-default">
           <div class="location-map" data-lat="47.2667" data-lon="11.3833"
                data-max_zoom="18" data-min_zoom="2" data-tile_layers="[...]"
@@ -112,13 +112,10 @@ class TestLocationWidget(YafowilTestCase):
         request = {
             'default.lat': ''
         }
-        err = self.expect_error(
-            ValueError,
-            widget.extract,
-            request
-        )
+        with self.assertRaises(ValueError) as arc:
+            widget.extract(request)
         msg = 'Malformed request. Cannot extract Coordinates'
-        self.assertEqual(str(err), msg)
+        self.assertEqual(str(arc.exception), msg)
 
     def test_extract_without_preset_value(self):
         # Widget extraction without preset value
@@ -173,7 +170,7 @@ class TestLocationWidget(YafowilTestCase):
         request = {}
         data = widget.extract(request)
         self.assertEqual(data.extracted, UNSET)
-        self.check_output("""
+        self.checkOutput("""
         <div class="location-wrapper location" id="location-default">
           <div class="location-map" data-lat="47.2667" data-lon="11.3833"
                data-max_zoom="18" data-min_zoom="2" data-tile_layers="[...]"
@@ -200,7 +197,7 @@ class TestLocationWidget(YafowilTestCase):
             [ExtractionError('Mandatory field was empty')]
         )
         self.assertEqual(data.extracted, None)
-        self.check_output("""
+        self.checkOutput("""
         <div class="location-wrapper error location" id="location-default">
           <div class="location-map" data-lat="47.2667" data-lon="11.3833"
                data-max_zoom="18" data-min_zoom="2" data-tile_layers="[...]"
@@ -227,7 +224,7 @@ class TestLocationWidget(YafowilTestCase):
             'lon': 11.3833,
             'zoom': 8
         })
-        self.check_output("""
+        self.checkOutput("""
         <div class="location-wrapper location" id="location-default">
           <div class="location-map" data-lat="47.2667" data-lon="11.3833"
                data-max_zoom="18" data-min_zoom="2" data-tile_layers="[...]"
