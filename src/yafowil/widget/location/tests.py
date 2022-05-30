@@ -295,6 +295,7 @@ class TestLocationWidget(YafowilTestCase):
         factory.theme = 'default'
         resources = factory.get_resources('yafowil.widget.location')
         self.assertTrue(resources.directory.endswith(np('/location/resources')))
+        self.assertEqual(resources.name, 'yafowil.widget.location')
         self.assertEqual(resources.path, 'yafowil-location')
 
         scripts = resources.scripts

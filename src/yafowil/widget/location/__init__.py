@@ -14,7 +14,7 @@ resources_dir = os.path.join(os.path.dirname(__file__), 'resources')
 # webresource ################################################################
 
 resources = wr.ResourceGroup(
-    name='yafowil-location-resources',
+    name='yafowil.widget.location',
     directory=resources_dir,
     path='yafowil-location'
 )
