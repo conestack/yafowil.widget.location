@@ -21,7 +21,8 @@ class TestLocationWidget(YafowilTestCase):
     def setUp(self):
         super(TestLocationWidget, self).setUp()
         from yafowil.widget import location
-        reload(location.widget)
+        from yafowil.widget.location import widget
+        reload(widget)
         location.register()
 
     def test_render_base(self):
