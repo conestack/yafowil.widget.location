@@ -4,20 +4,25 @@ from yafowil.base import factory
 from yafowil.compat import IS_PY2
 from yafowil.tests import fxml
 from yafowil.tests import YafowilTestCase
+import os
 import unittest
-import yafowil.loader  # noqa
 
 
 if not IS_PY2:
     from importlib import reload
 
 
+def np(path):
+    return path.replace('/', os.path.sep)
+
+
 class TestLocationWidget(YafowilTestCase):
 
     def setUp(self):
         super(TestLocationWidget, self).setUp()
-        from yafowil.widget.location import widget
-        reload(widget)
+        from yafowil.widget import location
+        reload(location.widget)
+        location.register()
 
     def test_render_base(self):
         # Render map widget with defaults
@@ -284,6 +289,56 @@ class TestLocationWidget(YafowilTestCase):
             data.errors,
             [ExtractionError('Longitude must be between -180 and +180 degrees')]
         )
+
+    def test_resources(self):
+        factory.theme = 'default'
+        resources = factory.get_resources('yafowil.widget.location')
+        self.assertTrue(resources.directory.endswith(np('/location/resources')))
+        self.assertEqual(resources.path, 'yafowil-location')
+
+        scripts = resources.scripts
+        self.assertEqual(len(scripts), 3)
+
+        self.assertTrue(
+            scripts[0].directory.endswith(np('/location/resources/leaflet'))
+        )
+        self.assertEqual(scripts[0].path, 'yafowil-location/leaflet')
+        self.assertEqual(scripts[0].file_name, 'leaflet.js')
+        self.assertTrue(os.path.exists(scripts[0].file_path))
+
+        self.assertTrue(
+            scripts[1].directory.endswith(np('/location/resources/leaflet-geosearch'))
+        )
+        self.assertEqual(scripts[1].path, 'yafowil-location/leaflet-geosearch')
+        self.assertEqual(scripts[1].file_name, 'geosearch.umd.js')
+        self.assertTrue(os.path.exists(scripts[1].file_path))
+
+        self.assertTrue(scripts[2].directory.endswith(np('/location/resources')))
+        self.assertEqual(scripts[2].path, 'yafowil-location')
+        self.assertEqual(scripts[2].file_name, 'widget.min.js')
+        self.assertTrue(os.path.exists(scripts[2].file_path))
+
+        styles = resources.styles
+        self.assertEqual(len(styles), 3)
+
+        self.assertTrue(
+            styles[0].directory.endswith(np('/location/resources/leaflet'))
+        )
+        self.assertEqual(styles[0].path, 'yafowil-location/leaflet')
+        self.assertEqual(styles[0].file_name, 'leaflet.css')
+        self.assertTrue(os.path.exists(styles[0].file_path))
+
+        self.assertTrue(
+            styles[1].directory.endswith(np('/location/resources/leaflet-geosearch'))
+        )
+        self.assertEqual(styles[1].path, 'yafowil-location/leaflet-geosearch')
+        self.assertEqual(styles[1].file_name, 'geosearch.css')
+        self.assertTrue(os.path.exists(styles[1].file_path))
+
+        self.assertTrue(styles[2].directory.endswith(np('/location/resources')))
+        self.assertEqual(styles[2].path, 'yafowil-location')
+        self.assertEqual(styles[2].file_name, 'widget.css')
+        self.assertTrue(os.path.exists(styles[2].file_path))
 
 
 if __name__ == '__main__':
