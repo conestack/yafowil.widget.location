@@ -67,6 +67,9 @@ var yafowil_location = (function (exports, $) {
     class LocationWidget {
         static initialize(context) {
             $('div.location-map', context).each(function() {
+                if ($(this).parent().attr('id').includes('TEMPLATE')) {
+                    return;
+                }
                 new LocationWidget($(this));
             });
         }
@@ -171,6 +174,15 @@ var yafowil_location = (function (exports, $) {
             this.change_val($(evt.currentTarget), '_lon');
         }
     }
+    function location_on_array_add(inst, context) {
+        LocationWidget.initialize(context);
+    }
+    $(function() {
+        if (!yafowil_array || yafowil_array === undefined) {
+            return;
+        }
+        yafowil_array.on_array_event('on_add', location_on_array_add);
+    });
 
     $(function() {
         if (window.ts !== undefined) {

@@ -79,6 +79,9 @@ export class LocationWidget {
 
     static initialize(context) {
         $('div.location-map', context).each(function() {
+            if ($(this).parent().attr('id').includes('TEMPLATE')) {
+                return;
+            }
             new LocationWidget($(this));
         });
     }
@@ -208,3 +211,18 @@ export class LocationWidget {
         this.change_val($(evt.currentTarget), '_lon');
     }
 }
+
+//////////////////////////////////////////////////////////////////////////////
+// yafowil.widget.array integration
+//////////////////////////////////////////////////////////////////////////////
+
+function location_on_array_add(inst, context) {
+    LocationWidget.initialize(context);
+}
+
+$(function() {
+    if (!yafowil_array || yafowil_array === undefined) {
+        return;
+    }
+    yafowil_array.on_array_event('on_add', location_on_array_add);
+});
