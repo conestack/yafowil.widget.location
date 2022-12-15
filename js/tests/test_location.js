@@ -1,5 +1,7 @@
 import { LocationWidget } from "../src/widget.js";
 
+window.yafowil_array = undefined
+
 QUnit.test('test', assert => {
     let el = $('<div />').addClass('location-map').attr('id', 'leafletmap')
         .data('lat', 40).data('lon', 20)
