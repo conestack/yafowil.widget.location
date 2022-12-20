@@ -221,9 +221,9 @@ function location_on_array_add(inst, context) {
     LocationWidget.initialize(context);
 }
 
-$(function() {
-    if (yafowil_array === undefined) {
+export function register_array_subscribers() {
+    if (window.yafowil_array === undefined) {
         return;
     }
-    yafowil_array.on_array_event('on_add', location_on_array_add);
-});
+    window.yafowil_array.on_array_event('on_add', location_on_array_add);
+}
