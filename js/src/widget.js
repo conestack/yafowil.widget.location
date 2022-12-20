@@ -79,7 +79,7 @@ export class LocationWidget {
 
     static initialize(context) {
         $('div.location-map', context).each(function() {
-            let id = $(this).parent().attr('id')
+            let id = $(this).parent().attr('id');
             if (id && id.includes('TEMPLATE')) {
                 return;
             }
