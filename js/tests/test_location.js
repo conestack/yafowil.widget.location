@@ -55,12 +55,19 @@ QUnit.test('register_array_subscribers', assert => {
                 attribution: 'Map data © &lt;a href="http://openstreetmap.org"&gt;OSM&lt;/a&gt;'
             }
         }]);
+    $('td', table).addClass('arraytemplate');
     el.appendTo($('td', table));
+
+    // invoke array on_add - returns
+    _array_subscribers['on_add'].apply(null, $('tr', table));
+    let widget = el.data('yafowil-location');
+    assert.notOk(widget);
+    $('td', table).removeClass('arraytemplate');
 
     // invoke array on_add
 
     _array_subscribers['on_add'].apply(null, $('tr', table));
-    let widget = el.data('yafowil-location');
+    widget = el.data('yafowil-location');
     assert.ok(widget);
 
     table.remove();

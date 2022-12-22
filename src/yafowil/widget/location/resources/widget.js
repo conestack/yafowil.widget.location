@@ -67,8 +67,7 @@ var yafowil_location = (function (exports, $) {
     class LocationWidget {
         static initialize(context) {
             $('div.location-map', context).each(function() {
-                let id = $(this).parent().attr('id');
-                if (id && id.includes('TEMPLATE')) {
+                if ($(this).parents('.arraytemplate').length) {
                     return;
                 }
                 new LocationWidget($(this));
