@@ -1,6 +1,7 @@
 import $ from 'jquery';
 
 import {LocationWidget} from './widget.js';
+import {register_array_subscribers} from './widget.js';
 
 export * from './widget.js';
 
@@ -12,4 +13,5 @@ $(function() {
     } else {
         LocationWidget.initialize();
     }
+    register_array_subscribers();
 });

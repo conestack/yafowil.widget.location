@@ -67,6 +67,10 @@ var yafowil_location = (function (exports, $) {
     class LocationWidget {
         static initialize(context) {
             $('div.location-map', context).each(function() {
+                if (window.yafowil_array !== undefined &&
+                    window.yafowil_array.inside_template($(this))) {
+                    return;
+                }
                 new LocationWidget($(this));
             });
         }
@@ -171,6 +175,15 @@ var yafowil_location = (function (exports, $) {
             this.change_val($(evt.currentTarget), '_lon');
         }
     }
+    function location_on_array_add(inst, context) {
+        LocationWidget.initialize(context);
+    }
+    function register_array_subscribers() {
+        if (window.yafowil_array === undefined) {
+            return;
+        }
+        window.yafowil_array.on_array_event('on_add', location_on_array_add);
+    }
 
     $(function() {
         if (window.ts !== undefined) {
@@ -180,12 +193,14 @@ var yafowil_location = (function (exports, $) {
         } else {
             LocationWidget.initialize();
         }
+        register_array_subscribers();
     });
 
     exports.LocationWidget = LocationWidget;
     exports.LocationWidgetMarker = LocationWidgetMarker;
     exports.LocationWidgetMarkerPopup = LocationWidgetMarkerPopup;
     exports.LocationWidgetSearch = LocationWidgetSearch;
+    exports.register_array_subscribers = register_array_subscribers;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
