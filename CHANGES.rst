@@ -4,6 +4,10 @@ Changes
 2.0 (unreleased)
 ----------------
 
+- Use default ``zoom`` if ``extract_zoom`` is ``True`` but no zoom given on
+  request.
+  [rnix]
+
 - Prevent initialize if widget is part of array template.
   [lenadax]
 

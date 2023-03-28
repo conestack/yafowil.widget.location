@@ -62,6 +62,8 @@ def location_extractor(widget, data):
             default='Longitude must be between -180 and +180 degrees'
         ))
     if attr_value('extract_zoom', widget, data):
+        if not zoom:
+            zoom = attr_value('zoom', widget, data)
         value['zoom'] = int(zoom)
     return value
 
