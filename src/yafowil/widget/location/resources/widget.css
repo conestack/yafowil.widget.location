@@ -1,4 +1,7 @@
 div.location-map {
-    height:300px;
-    width:100%;
+    height: 300px;
+    width: 100%;
+}
+.leaflet-geosearch-bar form {
+    padding: 0;
 }
