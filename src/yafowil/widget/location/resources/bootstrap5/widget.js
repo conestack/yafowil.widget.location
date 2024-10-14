@@ -216,7 +216,6 @@ var yafowil_location = (function (exports, $$1) {
             super(elem);
         }
         create_marker(lat, lon) {
-            console.log('XXXX');
             return new BS5LocationWidgetMarker(this, lat, lon);
         }
     }

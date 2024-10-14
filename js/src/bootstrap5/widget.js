@@ -45,7 +45,6 @@ export class BS5LocationWidget extends LocationWidget {
     }
 
     create_marker(lat, lon) {
-        console.log('XXXX')
         return new BS5LocationWidgetMarker(this, lat, lon);
     }
 }
