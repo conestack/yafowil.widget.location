@@ -69,7 +69,7 @@ export class LocationWidgetSearch {
             lon = location.x,
             widget = this.widget;
         widget.markers.clearLayers();
-        new LocationWidgetMarker(widget, lat, lon);
+        this.widget.create_marker(lat, lon);
         widget.lat = lat;
         widget.lon = lon;
     }
@@ -159,6 +159,10 @@ export class LocationWidget {
         this._input_zoom.val(val);
     }
 
+    create_marker(lat, lon) {
+        return new LocationWidgetMarker(this, lat, lon);
+    }
+
     create_map() {
         // create map
         let map = this.map = new L.Map(this.id);
@@ -174,7 +178,7 @@ export class LocationWidget {
         map.addLayer(markers);
         // add marker if value given
         if (this.value) {
-            new LocationWidgetMarker(this, this.lat, this.lon);
+            this.create_marker(this.lat, this.lon);
         }
         // add or move marker on map click
         map.on('click', this.click_handle.bind(this));
@@ -184,7 +188,7 @@ export class LocationWidget {
         // XXX: confirmation dialog
         this.markers.clearLayers();
         let latlng = evt.latlng;
-        new LocationWidgetMarker(this, latlng.lat, latlng.lng);
+        this.create_marker(latlng.lat, latlng.lng);
         this.lat = latlng.lat;
         this.lon = latlng.lng;
         this.zoom = this.map.getZoom();
@@ -198,7 +202,7 @@ export class LocationWidget {
         }
         this[name] = val;
         this.markers.clearLayers();
-        new LocationWidgetMarker(this, this.lat, this.lon);
+        this.create_marker(this.lat, this.lon);
         this.map.setView([this.lat, this.lon], this.zoom);
     }
 
