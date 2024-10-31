@@ -317,7 +317,7 @@ class TestLocationWidget(YafowilTestCase):
 
         self.assertTrue(scripts[2].directory.endswith(np('/location/resources')))
         self.assertEqual(scripts[2].path, 'yafowil-location')
-        self.assertEqual(scripts[2].file_name, 'widget.min.js')
+        self.assertEqual(scripts[2].file_name, 'default/widget.min.js')
         self.assertTrue(os.path.exists(scripts[2].file_path))
 
         styles = resources.styles
@@ -339,7 +339,7 @@ class TestLocationWidget(YafowilTestCase):
 
         self.assertTrue(styles[2].directory.endswith(np('/location/resources')))
         self.assertEqual(styles[2].path, 'yafowil-location')
-        self.assertEqual(styles[2].file_name, 'widget.css')
+        self.assertEqual(styles[2].file_name, 'default/widget.css')
         self.assertTrue(os.path.exists(styles[2].file_path))
 
 

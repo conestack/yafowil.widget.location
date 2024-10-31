@@ -35,8 +35,8 @@ resources.add(wr.ScriptResource(
 resources.add(wr.ScriptResource(
     name='yafowil-location-js',
     depends=['jquery-js', 'leaflet-geosearch-js'],
-    resource='widget.js',
-    compressed='widget.min.js'
+    resource='default/widget.js',
+    compressed='default/widget.min.js'
 ))
 resources.add(wr.StyleResource(
     name='leaflet-css',
@@ -54,7 +54,7 @@ resources.add(wr.StyleResource(
 resources.add(wr.StyleResource(
     name='yafowil-location-css',
     depends='leaflet-geosearch-css',
-    resource='widget.css'
+    resource='default/widget.css'
 ))
 
 # B/C resources ##############################################################
@@ -69,7 +69,7 @@ js = [{
     'order': 21,
 }, {
     'group': 'yafowil.widget.location.common',
-    'resource': 'widget.js',
+    'resource': 'default/widget.js',
     'order': 23,
 }]
 css = [{
@@ -82,7 +82,7 @@ css = [{
     'order': 21,
 }, {
     'group': 'yafowil.widget.location.common',
-    'resource': 'widget.css',
+    'resource': 'default/widget.css',
     'order': 22,
 }]
 

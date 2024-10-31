@@ -1,5 +1,5 @@
-import {LocationWidgetMarkerPopup} from '../widget.js';
-import {LocationWidget} from '../widget.js';
+import {LocationWidgetMarkerPopup} from '../default/widget.js';
+import {LocationWidget} from '../default/widget.js';
 
 const locationIcon = L.divIcon({
     html: '<i class="bi bi-geo-alt-fill custom-marker"></i>',
