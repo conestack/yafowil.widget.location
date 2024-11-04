@@ -8,6 +8,40 @@ resources_dir = os.path.join(os.path.dirname(__file__), 'resources')
 
 
 ##############################################################################
+# Leaflet
+##############################################################################
+
+# webresource ################################################################
+
+leaflet_js = wr.ScriptResource(
+    name='leaflet-js',
+    directory=os.path.join(resources_dir, 'leaflet'),
+    path='yafowil-location/leaflet',
+    resource='leaflet-src.js',
+    compressed='leaflet.js'
+)
+leaflet_css = wr.StyleResource(
+    name='leaflet-css',
+    directory=os.path.join(resources_dir, 'leaflet'),
+    path='yafowil-location/leaflet',
+    resource='leaflet.css'
+)
+leaflet_geosearch_js = wr.ScriptResource(
+    name='leaflet-geosearch-js',
+    depends='leaflet-js',
+    directory=os.path.join(resources_dir, 'leaflet-geosearch'),
+    path='yafowil-location/leaflet-geosearch',
+    resource='geosearch.umd.js'
+)
+leaflet_geosearch_css = wr.StyleResource(
+    name='leaflet-geosearch-css',
+    depends='leaflet-css',
+    directory=os.path.join(resources_dir, 'leaflet-geosearch'),
+    path='yafowil-location/leaflet-geosearch',
+    resource='geosearch.css'
+)
+
+##############################################################################
 # Default
 ##############################################################################
 
@@ -18,43 +52,22 @@ resources = wr.ResourceGroup(
     directory=resources_dir,
     path='yafowil-location'
 )
-resources.add(wr.ScriptResource(
-    name='leaflet-js',
-    directory=os.path.join(resources_dir, 'leaflet'),
-    path='yafowil-location/leaflet',
-    resource='leaflet-src.js',
-    compressed='leaflet.js'
-))
-resources.add(wr.ScriptResource(
-    name='leaflet-geosearch-js',
-    depends='leaflet-js',
-    directory=os.path.join(resources_dir, 'leaflet-geosearch'),
-    path='yafowil-location/leaflet-geosearch',
-    resource='geosearch.umd.js'
-))
+resources.add(leaflet_js)
+resources.add(leaflet_css)
+resources.add(leaflet_geosearch_js)
+resources.add(leaflet_geosearch_css)
 resources.add(wr.ScriptResource(
     name='yafowil-location-js',
+    directory=os.path.join(resources_dir, 'default'),
     depends=['jquery-js', 'leaflet-geosearch-js'],
-    resource='default/widget.js',
-    compressed='default/widget.min.js'
-))
-resources.add(wr.StyleResource(
-    name='leaflet-css',
-    directory=os.path.join(resources_dir, 'leaflet'),
-    path='yafowil-location/leaflet',
-    resource='leaflet.css'
-))
-resources.add(wr.StyleResource(
-    name='leaflet-geosearch-css',
-    depends='leaflet-css',
-    directory=os.path.join(resources_dir, 'leaflet-geosearch'),
-    path='yafowil-location/leaflet-geosearch',
-    resource='geosearch.css'
+    resource='widget.js',
+    compressed='widget.min.js'
 ))
 resources.add(wr.StyleResource(
     name='yafowil-location-css',
+    directory=os.path.join(resources_dir, 'default'),
     depends='leaflet-geosearch-css',
-    resource='default/widget.css'
+    resource='widget.min.css'
 ))
 
 # B/C resources ##############################################################
@@ -82,7 +95,7 @@ css = [{
     'order': 21,
 }, {
     'group': 'yafowil.widget.location.common',
-    'resource': 'default/widget.css',
+    'resource': 'default/widget.min.css',
     'order': 22,
 }]
 
@@ -98,45 +111,26 @@ bootstrap5_resources = wr.ResourceGroup(
     directory=resources_dir,
     path='yafowil-location'
 )
-bootstrap5_resources.add(wr.ScriptResource(
-    name='leaflet-js',
-    directory=os.path.join(resources_dir, 'leaflet'),
-    path='yafowil-location/leaflet',
-    resource='leaflet-src.js',
-    compressed='leaflet.js'
-))
-bootstrap5_resources.add(wr.ScriptResource(
-    name='leaflet-geosearch-js',
-    depends='leaflet-js',
-    directory=os.path.join(resources_dir, 'leaflet-geosearch'),
-    path='yafowil-location/leaflet-geosearch',
-    resource='geosearch.umd.js'
-))
+bootstrap5_resources.add(leaflet_js)
+bootstrap5_resources.add(leaflet_css)
+bootstrap5_resources.add(leaflet_geosearch_js)
+bootstrap5_resources.add(leaflet_geosearch_css)
 bootstrap5_resources.add(wr.ScriptResource(
     name='yafowil-location-js',
+    directory=os.path.join(resources_dir, 'bootstrap5'),
     depends=['jquery-js', 'leaflet-geosearch-js'],
-    resource='bootstrap5/widget.js',
-    compressed='bootstrap5/widget.min.js'
-))
-bootstrap5_resources.add(wr.StyleResource(
-    name='leaflet-css',
-    directory=os.path.join(resources_dir, 'leaflet'),
-    path='yafowil-location/leaflet',
-    resource='leaflet.css'
-))
-bootstrap5_resources.add(wr.StyleResource(
-    name='leaflet-geosearch-css',
-    depends='leaflet-css',
-    directory=os.path.join(resources_dir, 'leaflet-geosearch'),
-    path='yafowil-location/leaflet-geosearch',
-    resource='geosearch.css'
+    resource='widget.js',
+    compressed='widget.min.js'
 ))
 bootstrap5_resources.add(wr.StyleResource(
     name='yafowil-location-css',
+    directory=os.path.join(resources_dir, 'bootstrap5'),
     depends='leaflet-geosearch-css',
-    resource='bootstrap5/widget.css'
+    resource='widget.min.css'
 ))
+
 # B/C resources ##############################################################
+
 bootstrap5_js = [{
     'group': 'yafowil.widget.location.dependencies',
     'resource': 'leaflet/leaflet.js',
@@ -160,7 +154,7 @@ bootstrap5_css = [{
     'order': 21,
 }, {
     'group': 'yafowil.widget.location.common',
-    'resource': 'bootstrap5/widget.css',
+    'resource': 'bootstrap5/widget.min.css',
     'order': 22,
 }]
 
