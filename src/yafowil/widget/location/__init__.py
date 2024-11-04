@@ -59,6 +59,7 @@ resources.add(leaflet_geosearch_css)
 resources.add(wr.ScriptResource(
     name='yafowil-location-js',
     directory=os.path.join(resources_dir, 'default'),
+    path='yafowil-location/default',
     depends=['jquery-js', 'leaflet-geosearch-js'],
     resource='widget.js',
     compressed='widget.min.js'
@@ -66,6 +67,7 @@ resources.add(wr.ScriptResource(
 resources.add(wr.StyleResource(
     name='yafowil-location-css',
     directory=os.path.join(resources_dir, 'default'),
+    path='yafowil-location/default',
     depends='leaflet-geosearch-css',
     resource='widget.min.css'
 ))
@@ -118,6 +120,7 @@ bootstrap5_resources.add(leaflet_geosearch_css)
 bootstrap5_resources.add(wr.ScriptResource(
     name='yafowil-location-js',
     directory=os.path.join(resources_dir, 'bootstrap5'),
+    path='yafowil-location/bootstrap5',
     depends=['jquery-js', 'leaflet-geosearch-js'],
     resource='widget.js',
     compressed='widget.min.js'
@@ -125,6 +128,7 @@ bootstrap5_resources.add(wr.ScriptResource(
 bootstrap5_resources.add(wr.StyleResource(
     name='yafowil-location-css',
     directory=os.path.join(resources_dir, 'bootstrap5'),
+    path='yafowil-location/bootstrap5',
     depends='leaflet-geosearch-css',
     resource='widget.min.css'
 ))
