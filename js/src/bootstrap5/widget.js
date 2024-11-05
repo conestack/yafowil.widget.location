@@ -11,6 +11,13 @@ const locationIcon = L.divIcon({
 
 export class BS5LocationWidgetMarker {
 
+    /**
+     * Creates a new marker at the specified latitude and longitude.
+     * @param {BS5LocationWidget} widget - The location widget to which this
+     * marker belongs.
+     * @param {number} lat - The latitude of the marker.
+     * @param {number} lon - The longitude of the marker.
+     */
     constructor(widget, lat, lon) {
         this.widget = widget;
         let marker = new L.Marker([lat, lon], {icon: locationIcon}, {draggable: true});
@@ -19,6 +26,11 @@ export class BS5LocationWidgetMarker {
         marker.on('dragend', this.dragend_handle.bind(this));
     }
 
+    /**
+     * Handles the drag end event of the marker, updating the widget's
+     * latitude and longitude.
+     * @param {Event} evt - The dragend event.
+     */
     dragend_handle(evt) {
         let latlng = evt.target._latlng,
             widget = this.widget;
@@ -30,6 +42,9 @@ export class BS5LocationWidgetMarker {
 
 export class BS5LocationWidget extends LocationWidget {
 
+    /**
+     * @param {jQuery} context - DOM context for initialization.
+     */
     static initialize(context) {
         $('div.location-map', context).each(function() {
             if (window.yafowil_array !== undefined &&
@@ -44,6 +59,12 @@ export class BS5LocationWidget extends LocationWidget {
         super(elem);
     }
 
+    /**
+     * Creates a new location marker at the specified latitude and longitude.
+     * @param {number} lat - The latitude of the marker.
+     * @param {number} lon - The longitude of the marker.
+     * @returns {BS5LocationWidgetMarker} - The newly created marker.
+     */
     create_marker(lat, lon) {
         return new BS5LocationWidgetMarker(this, lat, lon);
     }
@@ -53,10 +74,16 @@ export class BS5LocationWidget extends LocationWidget {
 // yafowil.widget.array integration
 //////////////////////////////////////////////////////////////////////////////
 
+/**
+ * Re-initializes widget on array add event.
+ */
 function location_on_array_add(inst, context) {
     BS5LocationWidget.initialize(context);
 }
 
+/**
+ * Registers subscribers to yafowil array events.
+ */
 export function register_array_subscribers() {
     if (window.yafowil_array === undefined) {
         return;
