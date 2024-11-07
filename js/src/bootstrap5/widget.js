@@ -13,8 +13,9 @@ export class BS5LocationWidgetMarker {
 
     /**
      * Creates a new marker at the specified latitude and longitude.
+     * 
      * @param {BS5LocationWidget} widget - The location widget to which this
-     * marker belongs.
+     *                                     marker belongs.
      * @param {number} lat - The latitude of the marker.
      * @param {number} lon - The longitude of the marker.
      */
@@ -29,6 +30,7 @@ export class BS5LocationWidgetMarker {
     /**
      * Handles the drag end event of the marker, updating the widget's
      * latitude and longitude.
+     * 
      * @param {Event} evt - The dragend event.
      */
     dragend_handle(evt) {
@@ -43,6 +45,8 @@ export class BS5LocationWidgetMarker {
 export class BS5LocationWidget extends LocationWidget {
 
     /**
+     * Initializes each widget in the given DOM context.
+     * 
      * @param {jQuery} context - DOM context for initialization.
      */
     static initialize(context) {
@@ -61,6 +65,7 @@ export class BS5LocationWidget extends LocationWidget {
 
     /**
      * Creates a new location marker at the specified latitude and longitude.
+     * 
      * @param {number} lat - The latitude of the marker.
      * @param {number} lon - The longitude of the marker.
      * @returns {BS5LocationWidgetMarker} - The newly created marker.
