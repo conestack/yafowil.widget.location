@@ -1,4 +1,11 @@
 .location-wrapper {
+    &.is-invalid {
+        border: 1px solid var(--bs-form-invalid-border-color);
+    }
+    &.is-valid {
+        border: 1px solid var(--bs-form-valid-border-color);
+    }
+
     // bootstrap 5 input-group styles
 
     .leaflet-control-geosearch {
