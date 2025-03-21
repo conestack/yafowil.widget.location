@@ -122,7 +122,7 @@ def lat_lon_input_renderer_helper(widget, data, value):
     return [lat_label, lat, lon_label, lon]
 
 
-@managedprops('lat', 'lon', 'zoom', *css_managed_props)
+@managedprops('lat', 'lon', 'zoom', 'disable_interaction', *css_managed_props)
 def location_edit_renderer(widget, data):
     tag = data.tag
     value = fetch_value(widget, data)
@@ -139,7 +139,7 @@ def location_edit_renderer(widget, data):
             ordered_val[key] = value[key]
         map_attrs['data-value'] = json.dumps(ordered_val)
     map_attrs.update(data_attrs_helper(widget, data, [
-        'lat', 'lon', 'zoom', 'min_zoom', 'max_zoom', 'tile_layers'
+        'lat', 'lon', 'zoom', 'min_zoom', 'max_zoom', 'tile_layers', 'disable_interaction'
     ]))
     map_ = tag('div', ' ', **map_attrs)
     # create hidden input for current zoom
@@ -163,8 +163,50 @@ def location_edit_renderer(widget, data):
     return wrapper
 
 
+@managedprops('lat', 'lon', 'zoom', *css_managed_props)
 def location_display_renderer(widget, data):
-    pass
+    tag = data.tag
+    value = fetch_value(widget, data)
+    # create map
+    map_attrs = {
+        'id': cssid(widget, 'location-map'),
+        'class': 'location-map',
+    }
+    if (value):
+        # use OrderedDict for generating data attribute value to ensure
+        # correct order. Needed for tests.
+        ordered_val = OrderedDict()
+        for key in sorted(value.keys()):
+            ordered_val[key] = value[key]
+        map_attrs['data-value'] = json.dumps(ordered_val)
+    map_attrs['data-disable_interaction'] = True
+    map_attrs.update(data_attrs_helper(widget, data, [
+        'lat', 'lon', 'zoom', 'min_zoom', 'max_zoom', 'tile_layers'
+    ]))
+    map_ = tag('div', ' ', **map_attrs)
+    # create hidden input for current zoom
+    zoom = tag('input', **{
+        'type': 'hidden',
+        'name': '{0}.zoom'.format(widget.dottedpath),
+        'value': value.get('zoom') if value else None,
+        'id': cssid(widget, 'location-zoom'),
+        'class': 'location-zoom',
+    })
+    # create location widget wrapper
+    children = [map_] + (
+        lat_lon_input_renderer_helper(widget, data, value)
+        if attr_value('show_lat_lon', widget, data)
+        else lat_lon_hidden_renderer_helper(widget, data, value)
+    ) + [zoom]
+    wrapper = tag('div', *children, **{
+        'id': cssid(widget, 'location'),
+        'class': ' '.join([
+            'location-wrapper',
+            cssclasses(widget, data),
+            attr_value('display_class', widget, data) or ''
+        ]),
+    })
+    return wrapper
 
 
 factory.register(
@@ -189,6 +231,8 @@ Add-on blueprint
 factory.defaults['location.class'] = 'location'
 
 factory.defaults['location.required'] = False
+
+factory.defaults['location.disable_interaction'] = False
 
 factory.defaults['location.error_class'] = 'error'
 

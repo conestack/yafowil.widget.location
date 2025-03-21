@@ -4,6 +4,9 @@ Changes
 2.0 (unreleased)
 ----------------
 
+- Introduce ``disable_interaction`` widget property and ``location_display_renderer``.
+  [lenadax]
+
 - Update jQuery to version ``4.0.0-beta.2``.
   [lenadax]
 

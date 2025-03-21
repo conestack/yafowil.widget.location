@@ -23,6 +23,9 @@ export class BS5LocationWidgetMarker {
         this.widget = widget;
         let marker = new L.Marker([lat, lon], {icon: locationIcon}, {draggable: true});
         marker.addTo(widget.markers);
+        if (this.widget.disable_interaction) {
+            return;
+        }
         new LocationWidgetMarkerPopup(widget, marker);
         marker.on('dragend', this.dragend_handle.bind(this));
     }
@@ -55,12 +58,15 @@ export class BS5LocationWidget extends LocationWidget {
                 window.yafowil_array.inside_template($(this))) {
                 return;
             }
-            new BS5LocationWidget($(this));
+            let options = {
+                disable_interaction: $(this).data('disable_interaction')
+            }
+            new BS5LocationWidget($(this), options);
         });
     }
 
-    constructor(elem) {
-        super(elem);
+    constructor(elem, options) {
+        super(elem, options);
     }
 
     /**

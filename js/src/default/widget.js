@@ -32,6 +32,9 @@ export class LocationWidgetMarker {
         this.widget = widget;
         let marker = new L.Marker([lat, lon], {draggable: true});
         marker.addTo(widget.markers);
+        if (this.widget.disable_interaction) {
+            return;
+        }
         new LocationWidgetMarkerPopup(widget, marker);
         marker.on('dragend', this.dragend_handle.bind(this));
     }
@@ -83,13 +86,17 @@ export class LocationWidget {
                 window.yafowil_array.inside_template($(this))) {
                 return;
             }
-            new LocationWidget($(this));
+            let options = {
+                disable_interaction: $(this).data('disable_interaction')
+            }
+            new LocationWidget($(this), options);
         });
     }
 
-    constructor(elem) {
+    constructor(elem, options) {
         elem.data('yafowil-location', this);
         this.elem = elem;
+        this.disable_interaction = options.disable_interaction;
         this.id = elem.attr('id');
         // form inputs
         let wrapper = elem.parent();
@@ -112,7 +119,9 @@ export class LocationWidget {
         // current value
         this.value = this.elem.data('value');
         this.create_map();
-        new LocationWidgetSearch(this);
+        if (!this.disable_interaction) {
+            new LocationWidgetSearch(this);
+        }
     }
 
     get value() {
@@ -185,6 +194,9 @@ export class LocationWidget {
     }
 
     click_handle(evt) {
+        if (this.disable_interaction) {
+            return;
+        }
         // XXX: confirmation dialog
         this.markers.clearLayers();
         let latlng = evt.latlng;
@@ -195,6 +207,9 @@ export class LocationWidget {
     }
 
     change_val(elem, name) {
+        if (this.disable_interaction) {
+            return;
+        }
         let val = parseFloat(elem.val());
         if (isNaN(val)) {
             elem.val(this[name]);

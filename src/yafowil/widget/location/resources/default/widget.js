@@ -28,6 +28,9 @@ var yafowil_location = (function (exports, $) {
             this.widget = widget;
             let marker = new L.Marker([lat, lon], {draggable: true});
             marker.addTo(widget.markers);
+            if (this.widget.disable_interaction) {
+                return;
+            }
             new LocationWidgetMarkerPopup(widget, marker);
             marker.on('dragend', this.dragend_handle.bind(this));
         }
@@ -71,12 +74,16 @@ var yafowil_location = (function (exports, $) {
                     window.yafowil_array.inside_template($(this))) {
                     return;
                 }
-                new LocationWidget($(this));
+                let options = {
+                    disable_interaction: $(this).data('disable_interaction')
+                };
+                new LocationWidget($(this), options);
             });
         }
-        constructor(elem) {
+        constructor(elem, options) {
             elem.data('yafowil-location', this);
             this.elem = elem;
+            this.disable_interaction = options.disable_interaction;
             this.id = elem.attr('id');
             let wrapper = elem.parent();
             this._input_lat = $('input.location-lat', wrapper);
@@ -94,7 +101,9 @@ var yafowil_location = (function (exports, $) {
             this._zoom = elem.data('zoom');
             this.value = this.elem.data('value');
             this.create_map();
-            new LocationWidgetSearch(this);
+            if (!this.disable_interaction) {
+                new LocationWidgetSearch(this);
+            }
         }
         get value() {
             return this._value;
@@ -151,6 +160,9 @@ var yafowil_location = (function (exports, $) {
             map.on('click', this.click_handle.bind(this));
         }
         click_handle(evt) {
+            if (this.disable_interaction) {
+                return;
+            }
             this.markers.clearLayers();
             let latlng = evt.latlng;
             this.create_marker(latlng.lat, latlng.lng);
@@ -159,6 +171,9 @@ var yafowil_location = (function (exports, $) {
             this.zoom = this.map.getZoom();
         }
         change_val(elem, name) {
+            if (this.disable_interaction) {
+                return;
+            }
             let val = parseFloat(elem.val());
             if (isNaN(val)) {
                 elem.val(this[name]);
