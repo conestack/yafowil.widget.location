@@ -101,6 +101,8 @@ widget attribute.
         'label': 'Location in Display Mode',
         'help': 'Search and pick a location on the map',
         'required': 'Location is required',
+        # 'disable_interaction': True, # manually disable interaction
+        # 'display_class': 'my-additional-class'
     })
 """
 
@@ -116,8 +118,7 @@ def location_display():
     form['location'] = factory('#field:location', value=value, mode='display', props={
         'label': 'Location in Display Mode',
         'help': 'Search and pick a location on the map',
-        'required': 'Location is required',
-        'display_class': 'border border-danger'
+        'required': 'Location is required'
     })
     return {
         'widget': form,
