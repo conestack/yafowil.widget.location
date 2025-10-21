@@ -34,5 +34,8 @@ test = [
 register = "yafowil.widget.location:register"
 example = "yafowil.widget.location.example:get_example"
 
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/yafowil"]
 [tool.zest-releaser]
 create-wheel = true
