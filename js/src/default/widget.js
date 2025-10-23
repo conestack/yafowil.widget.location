@@ -32,6 +32,9 @@ export class LocationWidgetMarker {
         this.widget = widget;
         let marker = new L.Marker([lat, lon], {draggable: true});
         marker.addTo(widget.markers);
+        if (this.widget.disable_interaction) {
+            return;
+        }
         new LocationWidgetMarkerPopup(widget, marker);
         marker.on('dragend', this.dragend_handle.bind(this));
     }
@@ -69,7 +72,7 @@ export class LocationWidgetSearch {
             lon = location.x,
             widget = this.widget;
         widget.markers.clearLayers();
-        new LocationWidgetMarker(widget, lat, lon);
+        this.widget.create_marker(lat, lon);
         widget.lat = lat;
         widget.lon = lon;
     }
@@ -83,13 +86,17 @@ export class LocationWidget {
                 window.yafowil_array.inside_template($(this))) {
                 return;
             }
-            new LocationWidget($(this));
+            let options = {
+                disable_interaction: $(this).data('disable_interaction')
+            }
+            new LocationWidget($(this), options);
         });
     }
 
-    constructor(elem) {
+    constructor(elem, options) {
         elem.data('yafowil-location', this);
         this.elem = elem;
+        this.disable_interaction = options.disable_interaction;
         this.id = elem.attr('id');
         // form inputs
         let wrapper = elem.parent();
@@ -112,7 +119,9 @@ export class LocationWidget {
         // current value
         this.value = this.elem.data('value');
         this.create_map();
-        new LocationWidgetSearch(this);
+        if (!this.disable_interaction) {
+            new LocationWidgetSearch(this);
+        }
     }
 
     get value() {
@@ -159,6 +168,10 @@ export class LocationWidget {
         this._input_zoom.val(val);
     }
 
+    create_marker(lat, lon) {
+        return new LocationWidgetMarker(this, lat, lon);
+    }
+
     create_map() {
         // create map
         let map = this.map = new L.Map(this.id);
@@ -174,23 +187,29 @@ export class LocationWidget {
         map.addLayer(markers);
         // add marker if value given
         if (this.value) {
-            new LocationWidgetMarker(this, this.lat, this.lon);
+            this.create_marker(this.lat, this.lon);
         }
         // add or move marker on map click
         map.on('click', this.click_handle.bind(this));
     }
 
     click_handle(evt) {
+        if (this.disable_interaction) {
+            return;
+        }
         // XXX: confirmation dialog
         this.markers.clearLayers();
         let latlng = evt.latlng;
-        new LocationWidgetMarker(this, latlng.lat, latlng.lng);
+        this.create_marker(latlng.lat, latlng.lng);
         this.lat = latlng.lat;
         this.lon = latlng.lng;
         this.zoom = this.map.getZoom();
     }
 
     change_val(elem, name) {
+        if (this.disable_interaction) {
+            return;
+        }
         let val = parseFloat(elem.val());
         if (isNaN(val)) {
             elem.val(this[name]);
@@ -198,7 +217,7 @@ export class LocationWidget {
         }
         this[name] = val;
         this.markers.clearLayers();
-        new LocationWidgetMarker(this, this.lat, this.lon);
+        this.create_marker(this.lat, this.lon);
         this.map.setView([this.lat, this.lon], this.zoom);
     }
 

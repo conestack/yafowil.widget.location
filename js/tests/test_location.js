@@ -10,7 +10,7 @@ QUnit.module('LocationWidget', hooks => {
 
         await import('leaflet-geosearch');
 
-        const modules = await import('../src/widget.js');
+        const modules = await import('../src/default/widget.js');
         LocationWidget = modules.LocationWidget;
         register_array_subscribers = modules.register_array_subscribers;
     });

@@ -1,44 +1,49 @@
+#
+# SOME DESCRIPTIVE TITLE
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2021-11-21 11:43+0100\n"
+"POT-Creation-Date: 2025-03-21 11:02+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Lingua 4.14\n"
+"Generated-By: Lingua 4.15.0\n"
 
 #. Default: Latitude is not floating point number
-#: src/yafowil/widget/location/widget.py:42
+#: ./src/yafowil/widget/location/widget.py:43
 msgid "latitude_is_no_float"
-msgstr "Geografische Breite is keine Fließkommazahl"
+msgstr ""
 
 #. Default: Longitude is not floating point number
-#: src/yafowil/widget/location/widget.py:49
+#: ./src/yafowil/widget/location/widget.py:50
 msgid "longitude_is_no_float"
-msgstr "Geografische Länge is keine Fließkommazahl"
+msgstr ""
 
 #. Default: Latitude must be between -90 and +90 degrees
-#: src/yafowil/widget/location/widget.py:54
+#: ./src/yafowil/widget/location/widget.py:55
 msgid "latitude_invalid_range"
-msgstr "Geografische Breite muss zwischen -90 und +90 Grad liegen"
+msgstr ""
 
 #. Default: Longitude must be between -180 and +180 degrees
-#: src/yafowil/widget/location/widget.py:59
+#: ./src/yafowil/widget/location/widget.py:60
 msgid "longitude_invalid_range"
-msgstr "Geografische Länge muss zwischen -180 und +180 Grad liegen"
+msgstr ""
 
 #. Default: Latitude:
 #. create label and input for lat
-#: src/yafowil/widget/location/widget.py:96
+#: ./src/yafowil/widget/location/widget.py:99
 msgid "latitude"
-msgstr "Geografische Breite:"
+msgstr ""
 
 #. Default: Longitude:
 #. create label and input for lon
-#: src/yafowil/widget/location/widget.py:108
+#: ./src/yafowil/widget/location/widget.py:111
 msgid "longitude"
-msgstr "Geografische Länge:"
+msgstr ""

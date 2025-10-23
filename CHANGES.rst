@@ -4,6 +4,27 @@ Changes
 2.0 (unreleased)
 ----------------
 
+- Introduce ``disable_interaction`` widget property and ``location_display_renderer``.
+  [lenadax]
+
+- Update jQuery to version ``4.0.0-beta.2``.
+  [lenadax]
+
+- Use Bootstrap icons as custom Leaflet markers.
+  [lenadax]
+
+- Implement dark theme for ``Bootstrap5`` dark theme mode using css filters.
+  [lenadax]
+
+- Use rollup for bundling scss. Use ``make rollup`` to compile js and scss.
+  [lenadax]
+
+- Use ``webtestrunner`` instead of ``karma`` for js tests. Use ``make wtr`` to run tests.
+  [lenadax]
+
+- Use ``pnpm`` as package manager.
+  [lenadax]
+
 - Use default ``zoom`` if ``extract_zoom`` is ``True`` but no zoom given on
   request.
   [rnix]
@@ -32,6 +53,9 @@ Changes
 - Introduce ``extract_zoom`` widget property. Defines whether to include
   zoom level on extracted value.
   [rnix]
+
+- Create Bootstrap5 widget version.
+  [lenadax]
 
 - Rewrite Javascript with ES6 classes.
   [rnix]

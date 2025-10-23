@@ -32,7 +32,8 @@ class TestLocationWidget(YafowilTestCase):
             name='default')
         self.checkOutput("""
         <div class="location-wrapper location" id="location-default">
-          <div class="location-map" data-lat="47.2667" data-lon="11.3833"
+          <div class="location-map" data-disable_interaction="false"
+               data-lat="47.2667" data-lon="11.3833"
                data-max_zoom="18" data-min_zoom="2" data-tile_layers="[...]"
                data-zoom="12" id="location-map-default">
           </div>
@@ -58,7 +59,7 @@ class TestLocationWidget(YafowilTestCase):
             value=value)
         self.checkOutput("""
         <div class="location-wrapper location" id="location-default">
-          <div class="location-map" data-lat="47.2667" data-lon="11.3833"
+          <div class="location-map" data-disable_interaction="false" data-lat="47.2667" data-lon="11.3833"
                data-max_zoom="18" data-min_zoom="2"
                data-tile_layers="[...]"
                data-value="{&quot;lat&quot;: 47.25, &quot;lon&quot;: 11.3333, &quot;zoom&quot;: 14}"
@@ -82,7 +83,8 @@ class TestLocationWidget(YafowilTestCase):
             })
         self.checkOutput("""
         <div class="location-wrapper location" id="location-default">
-          <div class="location-map" data-lat="47.2667" data-lon="11.3833"
+          <div class="location-map" data-disable_interaction="false"
+               data-lat="47.2667" data-lon="11.3833"
                data-max_zoom="18" data-min_zoom="2" data-tile_layers="[...]"
                data-zoom="12" id="location-map-default">
           </div>
@@ -99,13 +101,27 @@ class TestLocationWidget(YafowilTestCase):
         </div>
         """, fxml(widget()))
 
-    def test_render_display_not_implemented(self):
-        # Display renderer is not implemented
+    def test_render_display(self):
+        # display render sets disable_interaction to True
         widget = factory(
             'location',
             name='default',
             mode='display')
-        self.assertEqual(widget(), None)
+        self.checkOutput("""
+        <div class="location-wrapper location " id="location-default">
+          <div class="location-map" data-disable_interaction="True"
+               data-lat="47.2667" data-lon="11.3833"
+               data-max_zoom="18" data-min_zoom="2" data-tile_layers="[...]"
+               data-zoom="12" id="location-map-default">
+          </div>
+          <input class="location-lat" id="location-lat-default"
+                 name="default.lat" type="hidden"/>
+          <input class="location-lon" id="location-lon-default"
+                 name="default.lon" type="hidden"/>
+          <input class="location-zoom" id="location-zoom-default"
+                 name="default.zoom" type="hidden"/>
+        </div>
+        """, fxml(widget()))
 
     def test_extract_with_invalid_request(self):
         # Widget extraction with invalid request
@@ -178,7 +194,8 @@ class TestLocationWidget(YafowilTestCase):
         self.assertEqual(data.extracted, UNSET)
         self.checkOutput("""
         <div class="location-wrapper location" id="location-default">
-          <div class="location-map" data-lat="47.2667" data-lon="11.3833"
+          <div class="location-map" data-disable_interaction="false"
+               data-lat="47.2667" data-lon="11.3833"
                data-max_zoom="18" data-min_zoom="2" data-tile_layers="[...]"
                data-value="{&quot;lat&quot;: &quot;47.0&quot;, &quot;lon&quot;: &quot;11.0&quot;}"
                data-zoom="12" id="location-map-default">
@@ -205,7 +222,8 @@ class TestLocationWidget(YafowilTestCase):
         self.assertEqual(data.extracted, None)
         self.checkOutput("""
         <div class="location-wrapper error location" id="location-default">
-          <div class="location-map" data-lat="47.2667" data-lon="11.3833"
+          <div class="location-map" data-disable_interaction="false"
+               data-lat="47.2667" data-lon="11.3833"
                data-max_zoom="18" data-min_zoom="2" data-tile_layers="[...]"
                data-zoom="12" id="location-map-default">
           </div>
@@ -232,7 +250,8 @@ class TestLocationWidget(YafowilTestCase):
         })
         self.checkOutput("""
         <div class="location-wrapper location" id="location-default">
-          <div class="location-map" data-lat="47.2667" data-lon="11.3833"
+          <div class="location-map" data-disable_interaction="false"
+               data-lat="47.2667" data-lon="11.3833"
                data-max_zoom="18" data-min_zoom="2" data-tile_layers="[...]"
                data-value="{&quot;lat&quot;: 47.2667, &quot;lon&quot;: 11.3833, &quot;zoom&quot;: 8}"
                data-zoom="12" id="location-map-default">
@@ -315,8 +334,8 @@ class TestLocationWidget(YafowilTestCase):
         self.assertEqual(scripts[1].file_name, 'geosearch.umd.js')
         self.assertTrue(os.path.exists(scripts[1].file_path))
 
-        self.assertTrue(scripts[2].directory.endswith(np('/location/resources')))
-        self.assertEqual(scripts[2].path, 'yafowil-location')
+        self.assertTrue(scripts[2].directory.endswith(np('/location/resources/default')))
+        self.assertEqual(scripts[2].path, 'yafowil-location/default')
         self.assertEqual(scripts[2].file_name, 'widget.min.js')
         self.assertTrue(os.path.exists(scripts[2].file_path))
 
@@ -337,9 +356,9 @@ class TestLocationWidget(YafowilTestCase):
         self.assertEqual(styles[1].file_name, 'geosearch.css')
         self.assertTrue(os.path.exists(styles[1].file_path))
 
-        self.assertTrue(styles[2].directory.endswith(np('/location/resources')))
-        self.assertEqual(styles[2].path, 'yafowil-location')
-        self.assertEqual(styles[2].file_name, 'widget.css')
+        self.assertTrue(styles[2].directory.endswith(np('/location/resources/default')))
+        self.assertEqual(styles[2].path, 'yafowil-location/default')
+        self.assertEqual(styles[2].file_name, 'widget.min.css')
         self.assertTrue(os.path.exists(styles[2].file_path))
 
 

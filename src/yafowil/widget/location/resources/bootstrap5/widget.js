@@ -1,4 +1,4 @@
-var yafowil_location = (function (exports, $) {
+var yafowil_location = (function (exports, $$1) {
     'use strict';
 
     class LocationWidgetMarkerPopup {
@@ -28,6 +28,9 @@ var yafowil_location = (function (exports, $) {
             this.widget = widget;
             let marker = new L.Marker([lat, lon], {draggable: true});
             marker.addTo(widget.markers);
+            if (this.widget.disable_interaction) {
+                return;
+            }
             new LocationWidgetMarkerPopup(widget, marker);
             marker.on('dragend', this.dragend_handle.bind(this));
         }
@@ -59,29 +62,33 @@ var yafowil_location = (function (exports, $) {
                 lon = location.x,
                 widget = this.widget;
             widget.markers.clearLayers();
-            new LocationWidgetMarker(widget, lat, lon);
+            this.widget.create_marker(lat, lon);
             widget.lat = lat;
             widget.lon = lon;
         }
     }
     class LocationWidget {
         static initialize(context) {
-            $('div.location-map', context).each(function() {
+            $$1('div.location-map', context).each(function() {
                 if (window.yafowil_array !== undefined &&
-                    window.yafowil_array.inside_template($(this))) {
+                    window.yafowil_array.inside_template($$1(this))) {
                     return;
                 }
-                new LocationWidget($(this));
+                let options = {
+                    disable_interaction: $$1(this).data('disable_interaction')
+                };
+                new LocationWidget($$1(this), options);
             });
         }
-        constructor(elem) {
+        constructor(elem, options) {
             elem.data('yafowil-location', this);
             this.elem = elem;
+            this.disable_interaction = options.disable_interaction;
             this.id = elem.attr('id');
             let wrapper = elem.parent();
-            this._input_lat = $('input.location-lat', wrapper);
-            this._input_lon = $('input.location-lon', wrapper);
-            this._input_zoom = $('input.location-zoom', wrapper);
+            this._input_lat = $$1('input.location-lat', wrapper);
+            this._input_lon = $$1('input.location-lon', wrapper);
+            this._input_zoom = $$1('input.location-zoom', wrapper);
             this.change_lat_handle = this.change_lat_handle.bind(this);
             this._input_lat.on('change', this.change_lat_handle);
             this.change_lon_handle = this.change_lon_handle.bind(this);
@@ -94,7 +101,9 @@ var yafowil_location = (function (exports, $) {
             this._zoom = elem.data('zoom');
             this.value = this.elem.data('value');
             this.create_map();
-            new LocationWidgetSearch(this);
+            if (!this.disable_interaction) {
+                new LocationWidgetSearch(this);
+            }
         }
         get value() {
             return this._value;
@@ -132,6 +141,9 @@ var yafowil_location = (function (exports, $) {
             this._zoom = val;
             this._input_zoom.val(val);
         }
+        create_marker(lat, lon) {
+            return new LocationWidgetMarker(this, lat, lon);
+        }
         create_map() {
             let map = this.map = new L.Map(this.id);
             this.map.setView([this.lat, this.lon], this.zoom);
@@ -143,19 +155,25 @@ var yafowil_location = (function (exports, $) {
             let markers = this.markers = new L.FeatureGroup();
             map.addLayer(markers);
             if (this.value) {
-                new LocationWidgetMarker(this, this.lat, this.lon);
+                this.create_marker(this.lat, this.lon);
             }
             map.on('click', this.click_handle.bind(this));
         }
         click_handle(evt) {
+            if (this.disable_interaction) {
+                return;
+            }
             this.markers.clearLayers();
             let latlng = evt.latlng;
-            new LocationWidgetMarker(this, latlng.lat, latlng.lng);
+            this.create_marker(latlng.lat, latlng.lng);
             this.lat = latlng.lat;
             this.lon = latlng.lng;
             this.zoom = this.map.getZoom();
         }
         change_val(elem, name) {
+            if (this.disable_interaction) {
+                return;
+            }
             let val = parseFloat(elem.val());
             if (isNaN(val)) {
                 elem.val(this[name]);
@@ -163,20 +181,67 @@ var yafowil_location = (function (exports, $) {
             }
             this[name] = val;
             this.markers.clearLayers();
-            new LocationWidgetMarker(this, this.lat, this.lon);
+            this.create_marker(this.lat, this.lon);
             this.map.setView([this.lat, this.lon], this.zoom);
         }
         change_lat_handle(evt) {
             evt.preventDefault();
-            this.change_val($(evt.currentTarget), '_lat');
+            this.change_val($$1(evt.currentTarget), '_lat');
         }
         change_lon_handle(evt) {
             evt.preventDefault();
-            this.change_val($(evt.currentTarget), '_lon');
+            this.change_val($$1(evt.currentTarget), '_lon');
+        }
+    }
+
+    const locationIcon = L.divIcon({
+        html: '<i class="bi bi-geo-alt-fill custom-marker"></i>',
+        className: 'leaflet-div-icon',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32]
+    });
+    class BS5LocationWidgetMarker {
+        constructor(widget, lat, lon) {
+            this.widget = widget;
+            let marker = new L.Marker([lat, lon], {icon: locationIcon}, {draggable: true});
+            marker.addTo(widget.markers);
+            if (this.widget.disable_interaction) {
+                return;
+            }
+            new LocationWidgetMarkerPopup(widget, marker);
+            marker.on('dragend', this.dragend_handle.bind(this));
+        }
+        dragend_handle(evt) {
+            let latlng = evt.target._latlng,
+                widget = this.widget;
+            widget.lat = latlng.lat;
+            widget.lon = latlng.lng;
+            widget.zoom = widget.map.getZoom();
+        }
+    }
+    class BS5LocationWidget extends LocationWidget {
+        static initialize(context) {
+            $('div.location-map', context).each(function() {
+                if (window.yafowil_array !== undefined &&
+                    window.yafowil_array.inside_template($(this))) {
+                    return;
+                }
+                let options = {
+                    disable_interaction: $(this).data('disable_interaction')
+                };
+                new BS5LocationWidget($(this), options);
+            });
+        }
+        constructor(elem, options) {
+            super(elem, options);
+        }
+        create_marker(lat, lon) {
+            return new BS5LocationWidgetMarker(this, lat, lon);
         }
     }
     function location_on_array_add(inst, context) {
-        LocationWidget.initialize(context);
+        BS5LocationWidget.initialize(context);
     }
     function register_array_subscribers() {
         if (window.yafowil_array === undefined) {
@@ -185,21 +250,19 @@ var yafowil_location = (function (exports, $) {
         window.yafowil_array.on_array_event('on_add', location_on_array_add);
     }
 
-    $(function() {
+    $$1(function() {
         if (window.ts !== undefined) {
-            ts.ajax.register(LocationWidget.initialize, true);
+            ts.ajax.register(BS5LocationWidget.initialize, true);
         } else if (window.bdajax !== undefined) {
-            bdajax.register(LocationWidget.initialize, true);
+            bdajax.register(BS5LocationWidget.initialize, true);
         } else {
-            LocationWidget.initialize();
+            BS5LocationWidget.initialize();
         }
         register_array_subscribers();
     });
 
-    exports.LocationWidget = LocationWidget;
-    exports.LocationWidgetMarker = LocationWidgetMarker;
-    exports.LocationWidgetMarkerPopup = LocationWidgetMarkerPopup;
-    exports.LocationWidgetSearch = LocationWidgetSearch;
+    exports.BS5LocationWidget = BS5LocationWidget;
+    exports.BS5LocationWidgetMarker = BS5LocationWidgetMarker;
     exports.register_array_subscribers = register_array_subscribers;
 
     Object.defineProperty(exports, '__esModule', { value: true });
