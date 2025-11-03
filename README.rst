@@ -1,5 +1,5 @@
 This is the location widget for `yafowil <http://pypi.python.org/pypi/yafowil>`_,
-based on `Leaflet http://leafletjs.org`_
+based on `Leaflet <http://leafletjs.org>`_
 
 - `Documentation <http://docs.yafowil.info/en/latest/blueprints.html#location>`_
 
