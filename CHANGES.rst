@@ -1,8 +1,8 @@
 Changes
 =======
 
-2.0 (unreleased)
-----------------
+2.0.0 (unreleased)
+------------------
 
 - Introduce ``disable_interaction`` widget property and ``location_display_renderer``.
   [lenadax]
