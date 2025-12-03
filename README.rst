@@ -1,3 +1,19 @@
+.. image:: https://img.shields.io/pypi/v/yafowil.widget.location.svg
+    :target: https://pypi.python.org/pypi/yafowil.widget.location
+    :alt: Latest PyPI version
+
+.. image:: https://img.shields.io/pypi/dm/yafowil.widget.location.svg
+    :target: https://pypi.python.org/pypi/yafowil.widget.location
+    :alt: Number of PyPI downloads
+
+.. image:: https://github.com/conestack/yafowil.widget.location/actions/workflows/test_py.yaml/badge.svg
+    :target: https://github.com/conestack/yafowil.widget.location/actions/workflows/test_py.yaml
+    :alt: Test yafowil.widget.location Python
+
+.. image:: https://github.com/conestack/yafowil.widget.location/actions/workflows/test_js.yaml/badge.svg
+    :target: https://github.com/conestack/yafowil.widget.location/actions/workflows/test_js.yaml
+    :alt: Test yafowil.widget.location JS
+
 This is the location widget for `yafowil <http://pypi.python.org/pypi/yafowil>`_,
 based on `Leaflet <http://leafletjs.org>`_
 
