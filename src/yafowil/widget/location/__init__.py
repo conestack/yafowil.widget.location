@@ -113,10 +113,14 @@ bootstrap5_resources = wr.ResourceGroup(
     directory=resources_dir,
     path='yafowil-location'
 )
-bootstrap5_resources.add(leaflet_js)
-bootstrap5_resources.add(leaflet_css)
-bootstrap5_resources.add(leaflet_geosearch_js)
-bootstrap5_resources.add(leaflet_geosearch_css)
+# Copies, because ``ResourceGroup.add`` re-parents its member. Sharing the
+# instances with the default theme group above would leave ``resource.parent``
+# pointing at this group while the resource is still a member of both, which
+# breaks name based deduplication in consuming applications.
+bootstrap5_resources.add(leaflet_js.copy())
+bootstrap5_resources.add(leaflet_css.copy())
+bootstrap5_resources.add(leaflet_geosearch_js.copy())
+bootstrap5_resources.add(leaflet_geosearch_css.copy())
 bootstrap5_resources.add(wr.ScriptResource(
     name='yafowil-location-js',
     directory=os.path.join(resources_dir, 'bootstrap5'),

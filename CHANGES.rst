@@ -4,7 +4,13 @@ Changes
 2.0.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add copies of the leaflet resources to the ``Bootstrap5`` resource group
+  instead of sharing the instances with the default theme group. Sharing them
+  left ``resource.parent`` pointing at the wrong group, which broke name based
+  resource deduplication in consuming applications and ended in a
+  ``ResourceConflictError`` when combined with another package shipping
+  leaflet under the same resource names, e.g. ``cone.maps``.
+  [rnix]
 
 
 2.0.0 (2026-02-03)
