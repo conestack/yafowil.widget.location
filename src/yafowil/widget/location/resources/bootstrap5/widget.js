@@ -8,14 +8,14 @@ var yafowil_location = (function (exports, $$1) {
             this.create_popup();
         }
         create_popup() {
-            let popup = document.createElement('a');
-            popup.href = "#";
-            popup.innerHTML = "Remove";
+            const popup = document.createElement('a');
+            popup.href = '#';
+            popup.innerHTML = 'Remove';
             popup.onclick = this.remove_handle.bind(this);
             this.marker.bindPopup(popup);
         }
         remove_handle() {
-            let widget = this.widget;
+            const widget = this.widget;
             widget.markers.removeLayer(this.marker);
             widget.lat = '';
             widget.lon = '';
@@ -26,7 +26,7 @@ var yafowil_location = (function (exports, $$1) {
     class LocationWidgetMarker {
         constructor(widget, lat, lon) {
             this.widget = widget;
-            let marker = new L.Marker([lat, lon], {draggable: true});
+            const marker = new L.Marker([lat, lon], { draggable: true });
             marker.addTo(widget.markers);
             if (this.widget.disable_interaction) {
                 return;
@@ -35,7 +35,7 @@ var yafowil_location = (function (exports, $$1) {
             marker.on('dragend', this.dragend_handle.bind(this));
         }
         dragend_handle(evt) {
-            let latlng = evt.target._latlng,
+            const latlng = evt.target._latlng,
                 widget = this.widget;
             widget.lat = latlng.lat;
             widget.lon = latlng.lng;
@@ -45,19 +45,17 @@ var yafowil_location = (function (exports, $$1) {
     class LocationWidgetSearch {
         constructor(widget) {
             this.widget = widget;
-            let geosearch = this.geosearch = new GeoSearch.GeoSearchControl({
+            const geosearch = new GeoSearch.GeoSearchControl({
                 provider: new GeoSearch.OpenStreetMapProvider(),
                 style: 'bar',
-                autoClose: true
+                autoClose: true,
             });
+            this.geosearch = geosearch;
             widget.map.addControl(geosearch);
-            widget.map.on(
-                'geosearch/showlocation',
-                this.showloaction_handle.bind(this)
-            );
+            widget.map.on('geosearch/showlocation', this.showloaction_handle.bind(this));
         }
         showloaction_handle(result) {
-            let location = result.location,
+            const location = result.location,
                 lat = location.y,
                 lon = location.x,
                 widget = this.widget;
@@ -69,13 +67,12 @@ var yafowil_location = (function (exports, $$1) {
     }
     class LocationWidget {
         static initialize(context) {
-            $$1('div.location-map', context).each(function() {
-                if (window.yafowil_array !== undefined &&
-                    window.yafowil_array.inside_template($$1(this))) {
+            $$1('div.location-map', context).each(function () {
+                if (window.yafowil_array?.inside_template($$1(this))) {
                     return;
                 }
-                let options = {
-                    disable_interaction: $$1(this).data('disable_interaction')
+                const options = {
+                    disable_interaction: $$1(this).data('disable_interaction'),
                 };
                 new LocationWidget($$1(this), options);
             });
@@ -85,7 +82,7 @@ var yafowil_location = (function (exports, $$1) {
             this.elem = elem;
             this.disable_interaction = options.disable_interaction;
             this.id = elem.attr('id');
-            let wrapper = elem.parent();
+            const wrapper = elem.parent();
             this._input_lat = $$1('input.location-lat', wrapper);
             this._input_lon = $$1('input.location-lon', wrapper);
             this._input_zoom = $$1('input.location-zoom', wrapper);
@@ -145,14 +142,16 @@ var yafowil_location = (function (exports, $$1) {
             return new LocationWidgetMarker(this, lat, lon);
         }
         create_map() {
-            let map = this.map = new L.Map(this.id);
+            const map = new L.Map(this.id);
+            this.map = map;
             this.map.setView([this.lat, this.lon], this.zoom);
-            for (let layer of this.tile_layers) {
+            for (const layer of this.tile_layers) {
                 layer.options.minZoom = this.min_zoom;
                 layer.options.maxZoom = this.max_zoom;
                 new L.TileLayer(layer.urlTemplate, layer.options).addTo(map);
             }
-            let markers = this.markers = new L.FeatureGroup();
+            const markers = new L.FeatureGroup();
+            this.markers = markers;
             map.addLayer(markers);
             if (this.value) {
                 this.create_marker(this.lat, this.lon);
@@ -164,7 +163,7 @@ var yafowil_location = (function (exports, $$1) {
                 return;
             }
             this.markers.clearLayers();
-            let latlng = evt.latlng;
+            const latlng = evt.latlng;
             this.create_marker(latlng.lat, latlng.lng);
             this.lat = latlng.lat;
             this.lon = latlng.lng;
@@ -174,8 +173,8 @@ var yafowil_location = (function (exports, $$1) {
             if (this.disable_interaction) {
                 return;
             }
-            let val = parseFloat(elem.val());
-            if (isNaN(val)) {
+            const val = parseFloat(elem.val());
+            if (Number.isNaN(val)) {
                 elem.val(this[name]);
                 return;
             }
@@ -199,12 +198,12 @@ var yafowil_location = (function (exports, $$1) {
         className: 'leaflet-div-icon',
         iconSize: [32, 32],
         iconAnchor: [16, 32],
-        popupAnchor: [0, -32]
+        popupAnchor: [0, -32],
     });
     class BS5LocationWidgetMarker {
         constructor(widget, lat, lon) {
             this.widget = widget;
-            let marker = new L.Marker([lat, lon], {icon: locationIcon}, {draggable: true});
+            const marker = new L.Marker([lat, lon], { icon: locationIcon }, { draggable: true });
             marker.addTo(widget.markers);
             if (this.widget.disable_interaction) {
                 return;
@@ -213,7 +212,7 @@ var yafowil_location = (function (exports, $$1) {
             marker.on('dragend', this.dragend_handle.bind(this));
         }
         dragend_handle(evt) {
-            let latlng = evt.target._latlng,
+            const latlng = evt.target._latlng,
                 widget = this.widget;
             widget.lat = latlng.lat;
             widget.lon = latlng.lng;
@@ -222,25 +221,21 @@ var yafowil_location = (function (exports, $$1) {
     }
     class BS5LocationWidget extends LocationWidget {
         static initialize(context) {
-            $('div.location-map', context).each(function() {
-                if (window.yafowil_array !== undefined &&
-                    window.yafowil_array.inside_template($(this))) {
+            $('div.location-map', context).each(function () {
+                if (window.yafowil_array?.inside_template($(this))) {
                     return;
                 }
-                let options = {
-                    disable_interaction: $(this).data('disable_interaction')
+                const options = {
+                    disable_interaction: $(this).data('disable_interaction'),
                 };
                 new BS5LocationWidget($(this), options);
             });
-        }
-        constructor(elem, options) {
-            super(elem, options);
         }
         create_marker(lat, lon) {
             return new BS5LocationWidgetMarker(this, lat, lon);
         }
     }
-    function location_on_array_add(inst, context) {
+    function location_on_array_add(_inst, context) {
         BS5LocationWidget.initialize(context);
     }
     function register_array_subscribers() {
@@ -250,7 +245,7 @@ var yafowil_location = (function (exports, $$1) {
         window.yafowil_array.on_array_event('on_add', location_on_array_add);
     }
 
-    $$1(function() {
+    $$1(() => {
         if (window.ts !== undefined) {
             ts.ajax.register(BS5LocationWidget.initialize, true);
         } else if (window.bdajax !== undefined) {

@@ -1,7 +1,6 @@
 import $ from 'jquery';
 
 export class LocationWidgetMarkerPopup {
-
     constructor(widget, marker) {
         this.widget = widget;
         this.marker = marker;
@@ -9,15 +8,15 @@ export class LocationWidgetMarkerPopup {
     }
 
     create_popup() {
-        let popup = document.createElement('a');
-        popup.href = "#";
-        popup.innerHTML = "Remove";
+        const popup = document.createElement('a');
+        popup.href = '#';
+        popup.innerHTML = 'Remove';
         popup.onclick = this.remove_handle.bind(this);
         this.marker.bindPopup(popup);
     }
 
     remove_handle() {
-        let widget = this.widget;
+        const widget = this.widget;
         widget.markers.removeLayer(this.marker);
         widget.lat = '';
         widget.lon = '';
@@ -27,10 +26,9 @@ export class LocationWidgetMarkerPopup {
 }
 
 export class LocationWidgetMarker {
-
     constructor(widget, lat, lon) {
         this.widget = widget;
-        let marker = new L.Marker([lat, lon], {draggable: true});
+        const marker = new L.Marker([lat, lon], { draggable: true });
         marker.addTo(widget.markers);
         if (this.widget.disable_interaction) {
             return;
@@ -40,7 +38,7 @@ export class LocationWidgetMarker {
     }
 
     dragend_handle(evt) {
-        let latlng = evt.target._latlng,
+        const latlng = evt.target._latlng,
             widget = this.widget;
         widget.lat = latlng.lat;
         widget.lon = latlng.lng;
@@ -49,25 +47,22 @@ export class LocationWidgetMarker {
 }
 
 export class LocationWidgetSearch {
-
     constructor(widget) {
         this.widget = widget;
         // add geosearch widget
-        let geosearch = this.geosearch = new GeoSearch.GeoSearchControl({
+        const geosearch = new GeoSearch.GeoSearchControl({
             provider: new GeoSearch.OpenStreetMapProvider(),
             style: 'bar',
-            autoClose: true
+            autoClose: true,
         });
+        this.geosearch = geosearch;
         widget.map.addControl(geosearch);
         // show result label on geo search submit and focus map
-        widget.map.on(
-            'geosearch/showlocation',
-            this.showloaction_handle.bind(this)
-        );
+        widget.map.on('geosearch/showlocation', this.showloaction_handle.bind(this));
     }
 
     showloaction_handle(result) {
-        let location = result.location,
+        const location = result.location,
             lat = location.y,
             lon = location.x,
             widget = this.widget;
@@ -79,16 +74,14 @@ export class LocationWidgetSearch {
 }
 
 export class LocationWidget {
-
     static initialize(context) {
-        $('div.location-map', context).each(function() {
-            if (window.yafowil_array !== undefined &&
-                window.yafowil_array.inside_template($(this))) {
+        $('div.location-map', context).each(function () {
+            if (window.yafowil_array?.inside_template($(this))) {
                 return;
             }
-            let options = {
-                disable_interaction: $(this).data('disable_interaction')
-            }
+            const options = {
+                disable_interaction: $(this).data('disable_interaction'),
+            };
             new LocationWidget($(this), options);
         });
     }
@@ -99,7 +92,7 @@ export class LocationWidget {
         this.disable_interaction = options.disable_interaction;
         this.id = elem.attr('id');
         // form inputs
-        let wrapper = elem.parent();
+        const wrapper = elem.parent();
         this._input_lat = $('input.location-lat', wrapper);
         this._input_lon = $('input.location-lon', wrapper);
         this._input_zoom = $('input.location-zoom', wrapper);
@@ -174,16 +167,18 @@ export class LocationWidget {
 
     create_map() {
         // create map
-        let map = this.map = new L.Map(this.id);
+        const map = new L.Map(this.id);
+        this.map = map;
         this.map.setView([this.lat, this.lon], this.zoom);
         // create tile layers
-        for (let layer of this.tile_layers) {
+        for (const layer of this.tile_layers) {
             layer.options.minZoom = this.min_zoom;
             layer.options.maxZoom = this.max_zoom;
             new L.TileLayer(layer.urlTemplate, layer.options).addTo(map);
         }
         // create markers feature group
-        let markers = this.markers = new L.FeatureGroup();
+        const markers = new L.FeatureGroup();
+        this.markers = markers;
         map.addLayer(markers);
         // add marker if value given
         if (this.value) {
@@ -199,7 +194,7 @@ export class LocationWidget {
         }
         // XXX: confirmation dialog
         this.markers.clearLayers();
-        let latlng = evt.latlng;
+        const latlng = evt.latlng;
         this.create_marker(latlng.lat, latlng.lng);
         this.lat = latlng.lat;
         this.lon = latlng.lng;
@@ -210,8 +205,8 @@ export class LocationWidget {
         if (this.disable_interaction) {
             return;
         }
-        let val = parseFloat(elem.val());
-        if (isNaN(val)) {
+        const val = parseFloat(elem.val());
+        if (Number.isNaN(val)) {
             elem.val(this[name]);
             return;
         }
@@ -236,7 +231,7 @@ export class LocationWidget {
 // yafowil.widget.array integration
 //////////////////////////////////////////////////////////////////////////////
 
-function location_on_array_add(inst, context) {
+function location_on_array_add(_inst, context) {
     LocationWidget.initialize(context);
 }
 
