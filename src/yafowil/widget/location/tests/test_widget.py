@@ -5,7 +5,6 @@ from yafowil.base import factory
 from yafowil.tests import fxml
 from yafowil.tests import YafowilTestCase
 import os
-import unittest
 
 
 def np(path):
@@ -119,6 +118,29 @@ class TestLocationWidget(YafowilTestCase):
         </div>
         """, fxml(widget()))
 
+    def test_render_display_with_value(self):
+        widget = factory(
+            'location',
+            name='default',
+            value={'lat': 47.0, 'lon': 11.0, 'zoom': 8},
+            mode='display')
+        self.checkOutput("""
+        <div class="location-wrapper location " id="location-default">
+          <div class="location-map" data-disable_interaction="True"
+               data-lat="47.2667" data-lon="11.3833"
+               data-max_zoom="18" data-min_zoom="2" data-tile_layers="[...]"
+               data-value="{&quot;lat&quot;: 47.0, &quot;lon&quot;: 11.0, &quot;zoom&quot;: 8}"
+               data-zoom="12" id="location-map-default">
+          </div>
+          <input class="location-lat" id="location-lat-default"
+                 name="default.lat" type="hidden" value="47.0"/>
+          <input class="location-lon" id="location-lon-default"
+                 name="default.lon" type="hidden" value="11.0"/>
+          <input class="location-zoom" id="location-zoom-default"
+                 name="default.zoom" type="hidden" value="8"/>
+        </div>
+        """, fxml(widget()))
+
     def test_extract_with_invalid_request(self):
         # Widget extraction with invalid request
         widget = factory(
@@ -170,6 +192,26 @@ class TestLocationWidget(YafowilTestCase):
             'lat': 47.2667,
             'lon': 11.3833,
             'zoom': 6
+        })
+
+    def test_extract_zoom_falls_back_to_zoom_property(self):
+        widget = factory(
+            'location',
+            name='default',
+            props={
+                'extract_zoom': True,
+                'zoom': 9
+            })
+        request = {
+            'default.lat': '47.2667',
+            'default.lon': '11.3833'
+        }
+        data = widget.extract(request)
+        self.assertEqual(data.errors, [])
+        self.assertEqual(data.extracted, {
+            'lat': 47.2667,
+            'lon': 11.3833,
+            'zoom': 9
         })
 
     def test_extract_with_preset_value(self):
@@ -356,7 +398,3 @@ class TestLocationWidget(YafowilTestCase):
         self.assertEqual(styles[2].path, 'yafowil-location/default')
         self.assertEqual(styles[2].file_name, 'widget.min.css')
         self.assertTrue(os.path.exists(styles[2].file_path))
-
-
-if __name__ == '__main__':
-    unittest.main()
