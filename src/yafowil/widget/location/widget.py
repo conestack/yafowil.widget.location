@@ -20,7 +20,7 @@ _ = TSF('yafowil.widget.location')
 def request_value(widget, data, name):
     if not data.request:
         return None
-    return data.request.get('{0}.{1}'.format(widget.dottedpath, name))
+    return data.request.get(f'{widget.dottedpath}.{name}')
 
 
 @managedprops('extract_zoom', 'factory', 'emptyvalue')
@@ -39,27 +39,29 @@ def location_extractor(widget, data):
     try:
         value['lat'] = float(lat)
     except ValueError:
-        raise ExtractionError(_(
-            'latitude_is_no_float',
-            default='Latitude is not floating point number'
-        ))
+        raise ExtractionError(
+            _('latitude_is_no_float', default='Latitude is not floating point number')
+        )
     try:
         value['lon'] = float(lon)
     except ValueError:
-        raise ExtractionError(_(
-            'longitude_is_no_float',
-            default='Longitude is not floating point number'
-        ))
+        raise ExtractionError(
+            _('longitude_is_no_float', default='Longitude is not floating point number')
+        )
     if value['lat'] < -90 or value['lat'] > 90:
-        raise ExtractionError(_(
-            'latitude_invalid_range',
-            default='Latitude must be between -90 and +90 degrees'
-        ))
+        raise ExtractionError(
+            _(
+                'latitude_invalid_range',
+                default='Latitude must be between -90 and +90 degrees',
+            )
+        )
     if value['lon'] < -180 or value['lon'] > 180:
-        raise ExtractionError(_(
-            'longitude_invalid_range',
-            default='Longitude must be between -180 and +180 degrees'
-        ))
+        raise ExtractionError(
+            _(
+                'longitude_invalid_range',
+                default='Longitude must be between -180 and +180 degrees',
+            )
+        )
     if attr_value('extract_zoom', widget, data):
         if not zoom:
             zoom = attr_value('zoom', widget, data)
@@ -74,50 +76,70 @@ def input_value(widget, data, value, name):
 def lat_lon_hidden_renderer_helper(widget, data, value):
     tag = data.tag
     # create hidden input for lat
-    lat = tag('input', **{
-        'type': 'hidden',
-        'name': '{0}.lat'.format(widget.dottedpath),
-        'value': input_value(widget, data, value, 'lat'),
-        'id': cssid(widget, 'location-lat'),
-        'class': 'location-lat',
-    })
+    lat = tag(
+        'input',
+        **{
+            'type': 'hidden',
+            'name': f'{widget.dottedpath}.lat',
+            'value': input_value(widget, data, value, 'lat'),
+            'id': cssid(widget, 'location-lat'),
+            'class': 'location-lat',
+        },
+    )
     # create hidden input for lon
-    lon = tag('input', **{
-        'type': 'hidden',
-        'name': '{0}.lon'.format(widget.dottedpath),
-        'value': input_value(widget, data, value, 'lon'),
-        'id': cssid(widget, 'location-lon'),
-        'class': 'location-lon',
-    })
+    lon = tag(
+        'input',
+        **{
+            'type': 'hidden',
+            'name': f'{widget.dottedpath}.lon',
+            'value': input_value(widget, data, value, 'lon'),
+            'id': cssid(widget, 'location-lon'),
+            'class': 'location-lon',
+        },
+    )
     return [lat, lon]
 
 
 def lat_lon_input_renderer_helper(widget, data, value):
     tag = data.tag
     # create label and input for lat
-    lat_label = tag('label', _('latitude', default='Latitude:'), **{
-        'for': '{0}.lat'.format(widget.dottedpath),
-        'class': 'location-lat-label control-label',
-    })
-    lat = tag('input', **{
-        'type': 'text',
-        'name': '{0}.lat'.format(widget.dottedpath),
-        'value': input_value(widget, data, value, 'lat'),
-        'id': cssid(widget, 'location-lat'),
-        'class': 'location-lat form-control',
-    })
+    lat_label = tag(
+        'label',
+        _('latitude', default='Latitude:'),
+        **{
+            'for': f'{widget.dottedpath}.lat',
+            'class': 'location-lat-label control-label',
+        },
+    )
+    lat = tag(
+        'input',
+        **{
+            'type': 'text',
+            'name': f'{widget.dottedpath}.lat',
+            'value': input_value(widget, data, value, 'lat'),
+            'id': cssid(widget, 'location-lat'),
+            'class': 'location-lat form-control',
+        },
+    )
     # create label and input for lon
-    lon_label = tag('label', _('longitude', default='Longitude:'), **{
-        'for': '{0}.lon'.format(widget.dottedpath),
-        'class': 'location-lon-label control-label',
-    })
-    lon = tag('input', **{
-        'type': 'text',
-        'name': '{0}.lon'.format(widget.dottedpath),
-        'value': input_value(widget, data, value, 'lon'),
-        'id': cssid(widget, 'location-lon'),
-        'class': 'location-lon form-control',
-    })
+    lon_label = tag(
+        'label',
+        _('longitude', default='Longitude:'),
+        **{
+            'for': f'{widget.dottedpath}.lon',
+            'class': 'location-lon-label control-label',
+        },
+    )
+    lon = tag(
+        'input',
+        **{
+            'type': 'text',
+            'name': f'{widget.dottedpath}.lon',
+            'value': input_value(widget, data, value, 'lon'),
+            'id': cssid(widget, 'location-lon'),
+            'class': 'location-lon form-control',
+        },
+    )
     return [lat_label, lat, lon_label, lon]
 
 
@@ -130,35 +152,58 @@ def location_edit_renderer(widget, data):
         'id': cssid(widget, 'location-map'),
         'class': 'location-map',
     }
-    if (value):
+    if value:
         # use OrderedDict for generating data attribute value to ensure
         # correct order. Needed for tests.
         ordered_val = OrderedDict()
         for key in sorted(value.keys()):
             ordered_val[key] = value[key]
         map_attrs['data-value'] = json.dumps(ordered_val)
-    map_attrs.update(data_attrs_helper(widget, data, [
-        'lat', 'lon', 'zoom', 'min_zoom', 'max_zoom', 'tile_layers', 'disable_interaction'
-    ]))
+    map_attrs.update(
+        data_attrs_helper(
+            widget,
+            data,
+            [
+                'lat',
+                'lon',
+                'zoom',
+                'min_zoom',
+                'max_zoom',
+                'tile_layers',
+                'disable_interaction',
+            ],
+        )
+    )
     map_ = tag('div', ' ', **map_attrs)
     # create hidden input for current zoom
-    zoom = tag('input', **{
-        'type': 'hidden',
-        'name': '{0}.zoom'.format(widget.dottedpath),
-        'value': value.get('zoom') if value else None,
-        'id': cssid(widget, 'location-zoom'),
-        'class': 'location-zoom',
-    })
+    zoom = tag(
+        'input',
+        **{
+            'type': 'hidden',
+            'name': f'{widget.dottedpath}.zoom',
+            'value': value.get('zoom') if value else None,
+            'id': cssid(widget, 'location-zoom'),
+            'class': 'location-zoom',
+        },
+    )
     # create location widget wrapper
-    children = [map_] + (
-        lat_lon_input_renderer_helper(widget, data, value)
-        if attr_value('show_lat_lon', widget, data)
-        else lat_lon_hidden_renderer_helper(widget, data, value)
-    ) + [zoom]
-    wrapper = tag('div', *children, **{
-        'id': cssid(widget, 'location'),
-        'class': ' '.join(['location-wrapper', cssclasses(widget, data)]),
-    })
+    children = (
+        [map_]
+        + (
+            lat_lon_input_renderer_helper(widget, data, value)
+            if attr_value('show_lat_lon', widget, data)
+            else lat_lon_hidden_renderer_helper(widget, data, value)
+        )
+        + [zoom]
+    )
+    wrapper = tag(
+        'div',
+        *children,
+        **{
+            'id': cssid(widget, 'location'),
+            'class': ' '.join(['location-wrapper', cssclasses(widget, data)]),
+        },
+    )
     return wrapper
 
 
@@ -171,7 +216,7 @@ def location_display_renderer(widget, data):
         'id': cssid(widget, 'location-map'),
         'class': 'location-map',
     }
-    if (value):
+    if value:
         # use OrderedDict for generating data attribute value to ensure
         # correct order. Needed for tests.
         ordered_val = OrderedDict()
@@ -179,47 +224,55 @@ def location_display_renderer(widget, data):
             ordered_val[key] = value[key]
         map_attrs['data-value'] = json.dumps(ordered_val)
     map_attrs['data-disable_interaction'] = True
-    map_attrs.update(data_attrs_helper(widget, data, [
-        'lat', 'lon', 'zoom', 'min_zoom', 'max_zoom', 'tile_layers'
-    ]))
+    map_attrs.update(
+        data_attrs_helper(
+            widget, data, ['lat', 'lon', 'zoom', 'min_zoom', 'max_zoom', 'tile_layers']
+        )
+    )
     map_ = tag('div', ' ', **map_attrs)
     # create hidden input for current zoom
-    zoom = tag('input', **{
-        'type': 'hidden',
-        'name': '{0}.zoom'.format(widget.dottedpath),
-        'value': value.get('zoom') if value else None,
-        'id': cssid(widget, 'location-zoom'),
-        'class': 'location-zoom',
-    })
+    zoom = tag(
+        'input',
+        **{
+            'type': 'hidden',
+            'name': f'{widget.dottedpath}.zoom',
+            'value': value.get('zoom') if value else None,
+            'id': cssid(widget, 'location-zoom'),
+            'class': 'location-zoom',
+        },
+    )
     # create location widget wrapper
-    children = [map_] + (
-        lat_lon_input_renderer_helper(widget, data, value)
-        if attr_value('show_lat_lon', widget, data)
-        else lat_lon_hidden_renderer_helper(widget, data, value)
-    ) + [zoom]
-    wrapper = tag('div', *children, **{
-        'id': cssid(widget, 'location'),
-        'class': ' '.join([
-            'location-wrapper',
-            cssclasses(widget, data),
-            attr_value('display_class', widget, data) or ''
-        ]),
-    })
+    children = (
+        [map_]
+        + (
+            lat_lon_input_renderer_helper(widget, data, value)
+            if attr_value('show_lat_lon', widget, data)
+            else lat_lon_hidden_renderer_helper(widget, data, value)
+        )
+        + [zoom]
+    )
+    wrapper = tag(
+        'div',
+        *children,
+        **{
+            'id': cssid(widget, 'location'),
+            'class': ' '.join(
+                [
+                    'location-wrapper',
+                    cssclasses(widget, data),
+                    attr_value('display_class', widget, data) or '',
+                ]
+            ),
+        },
+    )
     return wrapper
 
 
 factory.register(
     'location',
-    extractors=[
-        location_extractor,
-        generic_required_extractor
-    ],
-    edit_renderers=[
-        location_edit_renderer
-    ],
-    display_renderers=[
-        location_display_renderer
-    ]
+    extractors=[location_extractor, generic_required_extractor],
+    edit_renderers=[location_edit_renderer],
+    display_renderers=[location_display_renderer],
 )
 
 factory.doc['blueprint']['location'] = """\
@@ -279,12 +332,14 @@ factory.doc['props']['location.show_lat_lon'] = """\
 Flag whether to show lat lon inputs for direct value input.
 """
 
-factory.defaults['location.tile_layers'] = [{
-    'urlTemplate': '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    'options': {
-        'attribution': 'Map data © &lt;a href="http://openstreetmap.org"&gt;OSM&lt;/a&gt;'
+factory.defaults['location.tile_layers'] = [
+    {
+        'urlTemplate': '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        'options': {
+            'attribution': 'Map data © &lt;a href="http://openstreetmap.org"&gt;OSM&lt;/a&gt;'
+        },
     }
-}]
+]
 factory.doc['props']['location.tile_layers'] = """\
 List of tile layers to create for location map widget.
 """

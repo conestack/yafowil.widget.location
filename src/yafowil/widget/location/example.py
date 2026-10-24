@@ -22,14 +22,17 @@ Location picker widget.
 
 def location_example():
     form = factory('fieldset', name='yafowil.widget.location.location')
-    form['location'] = factory('#field:location', props={
-        'label': 'Location',
-        'help': 'Search and pick a location on the map',
-        'required': 'Location is required',
-        'lat': 47.2667,
-        'lon': 11.3833,
-        'zoom': 14,
-    })
+    form['location'] = factory(
+        '#field:location',
+        props={
+            'label': 'Location',
+            'help': 'Search and pick a location on the map',
+            'required': 'Location is required',
+            'lat': 47.2667,
+            'lon': 11.3833,
+            'zoom': 14,
+        },
+    )
     return {
         'widget': form,
         'doc': DOC_LOCATION,
@@ -66,11 +69,15 @@ def location_with_preset_value_example():
         'lon': 11.3833,
         'zoom': 14,
     }
-    form['location'] = factory('#field:location', value=value, props={
-        'label': 'Location',
-        'help': 'Search and pick a location on the map',
-        'required': 'Location is required',
-    })
+    form['location'] = factory(
+        '#field:location',
+        value=value,
+        props={
+            'label': 'Location',
+            'help': 'Search and pick a location on the map',
+            'required': 'Location is required',
+        },
+    )
     return {
         'widget': form,
         'doc': DOC_LOCATION_WITH_PRESET_VALUE,
@@ -115,11 +122,16 @@ def location_display():
         'lon': 11.3833,
         'zoom': 14,
     }
-    form['location'] = factory('#field:location', value=value, mode='display', props={
-        'label': 'Location in Display Mode',
-        'help': 'Search and pick a location on the map',
-        'required': 'Location is required'
-    })
+    form['location'] = factory(
+        '#field:location',
+        value=value,
+        mode='display',
+        props={
+            'label': 'Location in Display Mode',
+            'help': 'Search and pick a location on the map',
+            'required': 'Location is required',
+        },
+    )
     return {
         'widget': form,
         'doc': DOC_LOCATION_DISPLAY,
@@ -128,8 +140,4 @@ def location_display():
 
 
 def get_example():
-    return [
-        location_example(),
-        location_with_preset_value_example(),
-        location_display()
-    ]
+    return [location_example(), location_with_preset_value_example(), location_display()]
