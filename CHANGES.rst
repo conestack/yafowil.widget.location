@@ -1,7 +1,7 @@
 Changes
 =======
 
-2.0.1 (unreleased)
+2.0.1 (2026-10-24)
 ------------------
 
 - Add copies of the leaflet resources to the ``Bootstrap5`` resource group
