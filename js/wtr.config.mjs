@@ -1,6 +1,14 @@
 import {importMapsPlugin} from '@web/dev-server-import-maps';
 import {playwrightLauncher} from '@web/test-runner-playwright';
 
+export const importMap = {
+    imports: {
+        'jquery': './node_modules/jquery/dist-module/jquery.module.js',
+        'leaflet': './src/yafowil/widget/location/resources/leaflet/dist/leaflet-src.esm.js',
+        'leaflet-geosearch': './src/yafowil/widget/location/resources/leaflet-geosearch/geosearch.umd.js'
+    },
+};
+
 export default {
     nodeResolve: true,
     browsers: [
@@ -21,15 +29,7 @@ export default {
     },
     plugins: [
         importMapsPlugin({
-            inject: {
-                importMap: {
-                    imports: {
-                        'jquery': './node_modules/jquery/dist-module/jquery.module.js',
-                        'leaflet': './src/yafowil/widget/location/resources/leaflet/dist/leaflet-src.esm.js',
-                        'leaflet-geosearch': './src/yafowil/widget/location/resources/leaflet-geosearch/geosearch.umd.js'
-                    },
-                },
-            },
+            inject: {importMap},
         }),
     ],
 }
