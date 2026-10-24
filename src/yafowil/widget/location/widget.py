@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from collections import OrderedDict
 from node.utils import UNSET
 from yafowil.base import ExtractionError
