@@ -4,6 +4,15 @@ Changes
 2.0.2 (unreleased)
 ------------------
 
+- Fix markers of the bootstrap5 location widget not being draggable. The
+  ``draggable`` option was passed to ``L.Marker`` as a third argument and was
+  ignored.
+  [rnix]
+
+- Fix the bootstrap5 location widget failing to initialize without a global
+  ``$``, e.g. with ``jQuery.noConflict()``. It imports jQuery now.
+  [rnix]
+
 - Do not write a byte order mark into the compiled CSS.
   [rnix]
 

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import { LocationWidget, LocationWidgetMarkerPopup } from '../default/widget.js';
 
 const locationIcon = L.divIcon({
@@ -19,7 +20,7 @@ export class BS5LocationWidgetMarker {
      */
     constructor(widget, lat, lon) {
         this.widget = widget;
-        const marker = new L.Marker([lat, lon], { icon: locationIcon }, { draggable: true });
+        const marker = new L.Marker([lat, lon], { icon: locationIcon, draggable: true });
         marker.addTo(widget.markers);
         if (this.widget.disable_interaction) {
             return;

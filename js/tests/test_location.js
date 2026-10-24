@@ -331,9 +331,7 @@ QUnit.module('BS5LocationWidget', (hooks) => {
     });
 
     hooks.beforeEach(() => {
-        // BS5LocationWidget.initialize uses the global jQuery
         orig_global_jquery = window.$;
-        window.$ = $;
     });
 
     hooks.afterEach(() => {
@@ -386,11 +384,22 @@ QUnit.module('BS5LocationWidget', (hooks) => {
         assert.strictEqual($('div.location-map', wrapper).data('yafowil-location'), undefined);
     });
 
+    QUnit.test('initialize without global jQuery', (assert) => {
+        // global ``$`` is not available with ``jQuery.noConflict()``
+        window.$ = undefined;
+        wrapper = create_map_dom();
+        BS5LocationWidget.initialize(wrapper);
+        widget = $('div.location-map', wrapper).data('yafowil-location');
+        assert.true(widget instanceof BS5LocationWidget);
+    });
+
     QUnit.test('marker dragend', (assert) => {
         wrapper = create_map_dom({ value: { lat: 1, lon: 2, zoom: 3 } });
         BS5LocationWidget.initialize(wrapper);
         widget = $('div.location-map', wrapper).data('yafowil-location');
         const marker = marker_layers()[0];
+        assert.true(marker.options.draggable);
+        assert.true(marker.dragging.enabled());
 
         marker.setLatLng([3, 4]);
         marker.fire('dragend');
