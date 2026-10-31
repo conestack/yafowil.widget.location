@@ -1,7 +1,7 @@
 Changes
 =======
 
-2.0.2 (unreleased)
+2.0.2 (2026-10-31)
 ------------------
 
 - Fix markers of the bootstrap5 location widget not being draggable. The
