@@ -336,7 +336,7 @@ factory.defaults['location.tile_layers'] = [
     {
         'urlTemplate': '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         'options': {
-            'attribution': 'Map data © &lt;a href="http://openstreetmap.org"&gt;OSM&lt;/a&gt;'
+            'attribution': 'Map data © <a href="http://openstreetmap.org">OSM</a>'
         },
     }
 ]

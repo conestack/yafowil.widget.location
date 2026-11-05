@@ -4,6 +4,8 @@ from yafowil.base import ExtractionError
 from yafowil.base import factory
 from yafowil.tests import fxml
 from yafowil.tests import YafowilTestCase
+import json
+import lxml.etree as etree
 import os
 
 
@@ -40,6 +42,14 @@ class TestLocationWidget(YafowilTestCase):
         </div>
         """,
             fxml(widget()),
+        )
+
+    def test_default_attribution_arrives_as_markup(self):
+        map_ = etree.fromstring(factory('location', name='default')()).find('div')
+        tile_layers = json.loads(map_.get('data-tile_layers'))
+        self.assertEqual(
+            tile_layers[0]['options']['attribution'],
+            'Map data © <a href="http://openstreetmap.org">OSM</a>',
         )
 
     def test_render_with_preset_value(self):

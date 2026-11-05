@@ -4,7 +4,10 @@ Changes
 2.0.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- The default attribution in ``tile_layers`` contains plain markup. ``yafowil``
+  encodes attribute values itself as of 4.2.0, custom attributions must not be
+  encoded upfront.
+  [rnix]
 
 
 2.0.2 (2026-10-31)
