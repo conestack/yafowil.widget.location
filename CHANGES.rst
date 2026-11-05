@@ -4,14 +4,21 @@ Changes
 2.0.3 (unreleased)
 ------------------
 
-- The search queries the service on submit and shows the first result, as the
-  usage policy of the public Nominatim service forbids queries while typing. The
-  new property ``search_autocomplete`` enables them for a service which allows
-  it. The new property ``search_url`` sets the URL of the service, ``search``
-  disables the search.
+- The search queries the service on enter and offers the results for selection,
+  as the usage policy of the public Nominatim service forbids queries while
+  typing. The new property ``search_autocomplete`` enables them for a service
+  which allows it. The new property ``search_url`` sets the URL of the service,
+  ``search`` disables the search.
   [rnix]
 
-- Encode the labels of search results in the result list.
+- A picked search result is used as it is, it does not get queried again.
+  [rnix]
+
+- The search sets no marker of its own next to the one of the widget, and encodes
+  the labels of its results.
+  [rnix]
+
+- The marker is not draggable if ``disable_interaction`` is set.
   [rnix]
 
 - The default attribution in ``tile_layers`` contains plain markup. ``yafowil``

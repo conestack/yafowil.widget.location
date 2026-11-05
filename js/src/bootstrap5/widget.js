@@ -20,7 +20,10 @@ export class BS5LocationWidgetMarker {
      */
     constructor(widget, lat, lon) {
         this.widget = widget;
-        const marker = new L.Marker([lat, lon], { icon: locationIcon, draggable: true });
+        const marker = new L.Marker([lat, lon], {
+            icon: locationIcon,
+            draggable: !widget.disable_interaction,
+        });
         marker.addTo(widget.markers);
         if (this.widget.disable_interaction) {
             return;

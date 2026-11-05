@@ -28,7 +28,7 @@ export class LocationWidgetMarkerPopup {
 export class LocationWidgetMarker {
     constructor(widget, lat, lon) {
         this.widget = widget;
-        const marker = new L.Marker([lat, lon], { draggable: true });
+        const marker = new L.Marker([lat, lon], { draggable: !widget.disable_interaction });
         marker.addTo(widget.markers);
         if (this.widget.disable_interaction) {
             return;
@@ -46,6 +46,9 @@ export class LocationWidgetMarker {
     }
 }
 
+// Keys which do not change the search term.
+const NAVIGATION_KEYS = [13, 27, 37, 38, 39, 40];
+
 export class LocationWidgetSearch {
     constructor(widget) {
         this.widget = widget;
@@ -55,14 +58,47 @@ export class LocationWidgetSearch {
             provider: new GeoSearch.OpenStreetMapProvider(provider_options),
             style: 'bar',
             autoClose: true,
-            autoComplete: widget.search_autocomplete,
+            // Creates the result list, querying while typing is decided below.
+            autoComplete: true,
+            // The widget sets a marker itself.
+            showMarker: false,
+            notFoundMessage: 'No results found',
             // Result lists get inserted as markup, the label comes from the service.
             resultFormat: ({ result }) => $('<div />').text(result.label).html(),
         });
+        geosearch.onSubmit = this.submit_handle.bind(this);
+        if (!widget.search_autocomplete) {
+            geosearch.autoSearch = this.typing_handle.bind(this);
+        }
         this.geosearch = geosearch;
         widget.map.addControl(geosearch);
         // show result label on geo search submit and focus map
         widget.map.on('geosearch/showlocation', this.showloaction_handle.bind(this));
+    }
+
+    /**
+     * Shows the result picked by the user, or offers the results for the query.
+     * The control would query again for the label of a picked result and take
+     * the first hit, which might be another place.
+     */
+    async submit_handle({ query, data }) {
+        const geosearch = this.geosearch;
+        if (data) {
+            geosearch.showResult(data, { query });
+            return;
+        }
+        if (!query) {
+            return;
+        }
+        const { provider, maxSuggestions, resultFormat } = geosearch.options;
+        const results = await provider.search({ query });
+        geosearch.resultList.render(results.slice(0, maxSuggestions), resultFormat);
+    }
+
+    typing_handle(event) {
+        if (!NAVIGATION_KEYS.includes(event.keyCode)) {
+            this.geosearch.resultList.clear();
+        }
     }
 
     showloaction_handle(result) {

@@ -352,10 +352,10 @@ service at ``search_url``.
 
 factory.defaults['location.search_autocomplete'] = False
 factory.doc['props']['location.search_autocomplete'] = """\
-Flag whether to query the service while typing and offer the results. If not set
-the search starts on submit and shows the first result. The usage policy of the
-public Nominatim service forbids this, enable it only together with a
-``search_url`` of a service which allows it.
+Flag whether to query the service while typing. If not set the service gets
+queried on submit. In both cases the results are offered for selection. The usage
+policy of the public Nominatim service forbids queries while typing, enable it
+only together with a ``search_url`` of a service which allows it.
 """
 
 factory.defaults['location.search_url'] = None

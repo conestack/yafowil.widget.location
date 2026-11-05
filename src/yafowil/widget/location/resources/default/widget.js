@@ -26,7 +26,7 @@ var yafowil_location = (function (exports, $) {
     class LocationWidgetMarker {
         constructor(widget, lat, lon) {
             this.widget = widget;
-            const marker = new L.Marker([lat, lon], { draggable: true });
+            const marker = new L.Marker([lat, lon], { draggable: !widget.disable_interaction });
             marker.addTo(widget.markers);
             if (this.widget.disable_interaction) {
                 return;
@@ -42,6 +42,7 @@ var yafowil_location = (function (exports, $) {
             widget.zoom = widget.map.getZoom();
         }
     }
+    const NAVIGATION_KEYS = [13, 27, 37, 38, 39, 40];
     class LocationWidgetSearch {
         constructor(widget) {
             this.widget = widget;
@@ -50,12 +51,36 @@ var yafowil_location = (function (exports, $) {
                 provider: new GeoSearch.OpenStreetMapProvider(provider_options),
                 style: 'bar',
                 autoClose: true,
-                autoComplete: widget.search_autocomplete,
+                autoComplete: true,
+                showMarker: false,
+                notFoundMessage: 'No results found',
                 resultFormat: ({ result }) => $('<div />').text(result.label).html(),
             });
+            geosearch.onSubmit = this.submit_handle.bind(this);
+            if (!widget.search_autocomplete) {
+                geosearch.autoSearch = this.typing_handle.bind(this);
+            }
             this.geosearch = geosearch;
             widget.map.addControl(geosearch);
             widget.map.on('geosearch/showlocation', this.showloaction_handle.bind(this));
+        }
+        async submit_handle({ query, data }) {
+            const geosearch = this.geosearch;
+            if (data) {
+                geosearch.showResult(data, { query });
+                return;
+            }
+            if (!query) {
+                return;
+            }
+            const { provider, maxSuggestions, resultFormat } = geosearch.options;
+            const results = await provider.search({ query });
+            geosearch.resultList.render(results.slice(0, maxSuggestions), resultFormat);
+        }
+        typing_handle(event) {
+            if (!NAVIGATION_KEYS.includes(event.keyCode)) {
+                this.geosearch.resultList.clear();
+            }
         }
         showloaction_handle(result) {
             const location = result.location,
