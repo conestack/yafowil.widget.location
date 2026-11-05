@@ -263,6 +263,82 @@ QUnit.module('LocationWidget', (hooks) => {
         assert.strictEqual($('input.location-lon', wrapper).val(), '7');
     });
 
+    function mock_search(control) {
+        const queries = [];
+        control.options.provider.search = async ({ query }) => {
+            queries.push(query);
+            return [{ x: 7, y: 8, label: '<b>x</b>&', bounds: null, raw: {} }];
+        };
+        return queries;
+    }
+
+    function press_key(control, value) {
+        const input = control.searchElement.input;
+        input.value = value;
+        input.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
+        return new Promise((resolve) => setTimeout(resolve, 300));
+    }
+
+    QUnit.test('search defaults', (assert) => {
+        create_widget();
+        const control = widget.location_search.geosearch;
+        assert.false(control.options.autoComplete);
+        assert.strictEqual(
+            control.options.provider.searchUrl,
+            'https://nominatim.openstreetmap.org/search',
+        );
+    });
+
+    QUnit.test('search disabled', (assert) => {
+        create_widget({ search: false });
+        assert.strictEqual(widget.location_search, undefined);
+        assert.strictEqual($('.leaflet-geosearch-bar form', wrapper).length, 0);
+    });
+
+    QUnit.test('search url', (assert) => {
+        create_widget({ search_url: 'https://example.com/search' });
+        const control = widget.location_search.geosearch;
+        assert.strictEqual(control.options.provider.searchUrl, 'https://example.com/search');
+    });
+
+    QUnit.test('search sends nothing while typing', async (assert) => {
+        create_widget();
+        const control = widget.location_search.geosearch;
+        const queries = mock_search(control);
+        await press_key(control, 'abc');
+        assert.deepEqual(queries, []);
+    });
+
+    QUnit.test('search on submit shows first result', async (assert) => {
+        create_widget();
+        const control = widget.location_search.geosearch;
+        const queries = mock_search(control);
+        // An animated map move would still run when the widget is gone.
+        control.options.updateMap = false;
+        await control.onSubmit({ query: 'abc' });
+        assert.deepEqual(queries, ['abc']);
+        assert.strictEqual(widget.lat, 8);
+        assert.strictEqual(widget.lon, 7);
+    });
+
+    QUnit.test('search autocomplete sends while typing', async (assert) => {
+        create_widget({ search_autocomplete: true });
+        const control = widget.location_search.geosearch;
+        const queries = mock_search(control);
+        await press_key(control, 'abc');
+        assert.deepEqual(queries, ['abc']);
+    });
+
+    QUnit.test('search result label is encoded', async (assert) => {
+        create_widget({ search_autocomplete: true });
+        const control = widget.location_search.geosearch;
+        mock_search(control);
+        await press_key(control, 'abc');
+        const item = $(control.resultList.container).children().first();
+        assert.strictEqual(item.children().length, 0);
+        assert.strictEqual(item.text(), '<b>x</b>&');
+    });
+
     QUnit.test('change lat and lon inputs', (assert) => {
         create_widget();
         const input_lat = $('input.location-lat', wrapper);

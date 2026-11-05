@@ -143,7 +143,16 @@ def lat_lon_input_renderer_helper(widget, data, value):
     return [lat_label, lat, lon_label, lon]
 
 
-@managedprops('lat', 'lon', 'zoom', 'disable_interaction', *css_managed_props)
+@managedprops(
+    'lat',
+    'lon',
+    'zoom',
+    'disable_interaction',
+    'search',
+    'search_autocomplete',
+    'search_url',
+    *css_managed_props,
+)
 def location_edit_renderer(widget, data):
     tag = data.tag
     value = fetch_value(widget, data)
@@ -171,6 +180,9 @@ def location_edit_renderer(widget, data):
                 'max_zoom',
                 'tile_layers',
                 'disable_interaction',
+                'search',
+                'search_autocomplete',
+                'search_url',
             ],
         )
     )
@@ -330,6 +342,27 @@ A class used as factory for creating location value at extraction time.
 factory.defaults['location.show_lat_lon'] = False
 factory.doc['props']['location.show_lat_lon'] = """\
 Flag whether to show lat lon inputs for direct value input.
+"""
+
+factory.defaults['location.search'] = True
+factory.doc['props']['location.search'] = """\
+Flag whether to show the search on the map. Each search query is sent to the
+service at ``search_url``.
+"""
+
+factory.defaults['location.search_autocomplete'] = False
+factory.doc['props']['location.search_autocomplete'] = """\
+Flag whether to query the service while typing and offer the results. If not set
+the search starts on submit and shows the first result. The usage policy of the
+public Nominatim service forbids this, enable it only together with a
+``search_url`` of a service which allows it.
+"""
+
+factory.defaults['location.search_url'] = None
+factory.doc['props']['location.search_url'] = """\
+URL of the search endpoint of a Nominatim service, e.g.
+``https://nominatim.example.com/search``. Defaults to the public service of
+OpenStreetMap.
 """
 
 factory.defaults['location.tile_layers'] = [

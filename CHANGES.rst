@@ -4,6 +4,16 @@ Changes
 2.0.3 (unreleased)
 ------------------
 
+- The search queries the service on submit and shows the first result, as the
+  usage policy of the public Nominatim service forbids queries while typing. The
+  new property ``search_autocomplete`` enables them for a service which allows
+  it. The new property ``search_url`` sets the URL of the service, ``search``
+  disables the search.
+  [rnix]
+
+- Encode the labels of search results in the result list.
+  [rnix]
+
 - The default attribution in ``tile_layers`` contains plain markup. ``yafowil``
   encodes attribute values itself as of 4.2.0, custom attributions must not be
   encoded upfront.

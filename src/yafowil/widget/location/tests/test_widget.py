@@ -30,7 +30,7 @@ class TestLocationWidget(YafowilTestCase):
         <div class="location-wrapper location" id="location-default">
           <div class="location-map" data-disable_interaction="false"
                data-lat="47.2667" data-lon="11.3833"
-               data-max_zoom="18" data-min_zoom="2" data-tile_layers="[...]"
+               data-max_zoom="18" data-min_zoom="2" data-search="true" data-search_autocomplete="false" data-tile_layers="[...]"
                data-zoom="12" id="location-map-default">
           </div>
           <input class="location-lat" id="location-lat-default"
@@ -52,6 +52,27 @@ class TestLocationWidget(YafowilTestCase):
             'Map data © <a href="http://openstreetmap.org">OSM</a>',
         )
 
+    def test_search_defaults(self):
+        map_ = etree.fromstring(factory('location', name='default')()).find('div')
+        self.assertEqual(map_.get('data-search'), 'true')
+        self.assertEqual(map_.get('data-search_autocomplete'), 'false')
+        self.assertIsNone(map_.get('data-search_url'))
+
+    def test_search_properties(self):
+        widget = factory(
+            'location',
+            name='default',
+            props={
+                'search': False,
+                'search_autocomplete': True,
+                'search_url': 'https://example.com/search',
+            },
+        )
+        map_ = etree.fromstring(widget()).find('div')
+        self.assertEqual(map_.get('data-search'), 'false')
+        self.assertEqual(map_.get('data-search_autocomplete'), 'true')
+        self.assertEqual(map_.get('data-search_url'), 'https://example.com/search')
+
     def test_render_with_preset_value(self):
         # Render map widget with defaults value
         value = {'lat': 47.2500, 'lon': 11.3333, 'zoom': 14}
@@ -60,7 +81,7 @@ class TestLocationWidget(YafowilTestCase):
             """
         <div class="location-wrapper location" id="location-default">
           <div class="location-map" data-disable_interaction="false" data-lat="47.2667" data-lon="11.3833"
-               data-max_zoom="18" data-min_zoom="2"
+               data-max_zoom="18" data-min_zoom="2" data-search="true" data-search_autocomplete="false"
                data-tile_layers="[...]"
                data-value="{&quot;lat&quot;: 47.25, &quot;lon&quot;: 11.3333, &quot;zoom&quot;: 14}"
                data-zoom="12" id="location-map-default">
@@ -83,7 +104,7 @@ class TestLocationWidget(YafowilTestCase):
         <div class="location-wrapper location" id="location-default">
           <div class="location-map" data-disable_interaction="false"
                data-lat="47.2667" data-lon="11.3833"
-               data-max_zoom="18" data-min_zoom="2" data-tile_layers="[...]"
+               data-max_zoom="18" data-min_zoom="2" data-search="true" data-search_autocomplete="false" data-tile_layers="[...]"
                data-zoom="12" id="location-map-default">
           </div>
           <label class="location-lat-label control-label"
@@ -203,7 +224,7 @@ class TestLocationWidget(YafowilTestCase):
         <div class="location-wrapper location" id="location-default">
           <div class="location-map" data-disable_interaction="false"
                data-lat="47.2667" data-lon="11.3833"
-               data-max_zoom="18" data-min_zoom="2" data-tile_layers="[...]"
+               data-max_zoom="18" data-min_zoom="2" data-search="true" data-search_autocomplete="false" data-tile_layers="[...]"
                data-value="{&quot;lat&quot;: &quot;47.0&quot;, &quot;lon&quot;: &quot;11.0&quot;}"
                data-zoom="12" id="location-map-default">
           </div>
@@ -227,7 +248,7 @@ class TestLocationWidget(YafowilTestCase):
         <div class="location-wrapper error location" id="location-default">
           <div class="location-map" data-disable_interaction="false"
                data-lat="47.2667" data-lon="11.3833"
-               data-max_zoom="18" data-min_zoom="2" data-tile_layers="[...]"
+               data-max_zoom="18" data-min_zoom="2" data-search="true" data-search_autocomplete="false" data-tile_layers="[...]"
                data-zoom="12" id="location-map-default">
           </div>
           <input class="location-lat" id="location-lat-default"
@@ -254,7 +275,7 @@ class TestLocationWidget(YafowilTestCase):
         <div class="location-wrapper location" id="location-default">
           <div class="location-map" data-disable_interaction="false"
                data-lat="47.2667" data-lon="11.3833"
-               data-max_zoom="18" data-min_zoom="2" data-tile_layers="[...]"
+               data-max_zoom="18" data-min_zoom="2" data-search="true" data-search_autocomplete="false" data-tile_layers="[...]"
                data-value="{&quot;lat&quot;: 47.2667, &quot;lon&quot;: 11.3833, &quot;zoom&quot;: 8}"
                data-zoom="12" id="location-map-default">
           </div>

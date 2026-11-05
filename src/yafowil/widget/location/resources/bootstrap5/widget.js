@@ -45,10 +45,13 @@ var yafowil_location = (function (exports, $) {
     class LocationWidgetSearch {
         constructor(widget) {
             this.widget = widget;
+            const provider_options = widget.search_url ? { searchUrl: widget.search_url } : {};
             const geosearch = new GeoSearch.GeoSearchControl({
-                provider: new GeoSearch.OpenStreetMapProvider(),
+                provider: new GeoSearch.OpenStreetMapProvider(provider_options),
                 style: 'bar',
                 autoClose: true,
+                autoComplete: widget.search_autocomplete,
+                resultFormat: ({ result }) => $('<div />').text(result.label).html(),
             });
             this.geosearch = geosearch;
             widget.map.addControl(geosearch);
@@ -93,13 +96,16 @@ var yafowil_location = (function (exports, $) {
             this.min_zoom = elem.data('min_zoom');
             this.max_zoom = elem.data('max_zoom');
             this.tile_layers = elem.data('tile_layers');
+            this.search = elem.data('search') !== false;
+            this.search_autocomplete = elem.data('search_autocomplete') === true;
+            this.search_url = elem.data('search_url');
             this._lat = elem.data('lat');
             this._lon = elem.data('lon');
             this._zoom = elem.data('zoom');
             this.value = this.elem.data('value');
             this.create_map();
-            if (!this.disable_interaction) {
-                new LocationWidgetSearch(this);
+            if (!this.disable_interaction && this.search) {
+                this.location_search = new LocationWidgetSearch(this);
             }
         }
         get value() {
