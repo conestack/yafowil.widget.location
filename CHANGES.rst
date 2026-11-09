@@ -1,7 +1,7 @@
 Changes
 =======
 
-2.1.0 (unreleased)
+2.1.0 (2026-11-09)
 ------------------
 
 - The search queries the service on enter and offers the results for selection,
